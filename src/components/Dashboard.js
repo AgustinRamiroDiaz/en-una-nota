@@ -12,6 +12,7 @@ function Dashboard() {
   const defaultDuration = parseInt(process.env.REACT_APP_DEFAULT_PREVIEW_DURATION || '1000', 10);
   const [pauseDuration, setPauseDuration] = useState(defaultDuration);
   const [isRevealed, setIsRevealed] = useState(false);
+  const [songNumber, setSongNumber] = useState(0);
 
   // Initialize Spotify Player
   const {
@@ -26,9 +27,12 @@ function Dashboard() {
     replayAndPause,
   } = useSpotifyPlayer(accessToken, pauseDuration);
 
-  // Reset revealed state when track changes
+  // Reset revealed state and increment song number when track changes
   useEffect(() => {
-    setIsRevealed(false);
+    if (currentTrack) {
+      setIsRevealed(false);
+      setSongNumber(prev => prev + 1);
+    }
   }, [currentTrack?.id]);
 
   return (
@@ -45,6 +49,10 @@ function Dashboard() {
         {/* Playing Status Indicator */}
         {currentTrack && (
           <div className="playback-status">
+            <div className="song-counter">
+              <span className="counter-label">Song</span>
+              <span className="counter-number">#{songNumber}</span>
+            </div>
             <div className={`status-indicator ${!isPaused ? 'playing' : 'paused'}`}>
               <span className="status-dot"></span>
               <span className="status-text">{!isPaused ? 'Playing' : 'Paused'}</span>

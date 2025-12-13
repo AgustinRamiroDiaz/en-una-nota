@@ -204,7 +204,36 @@
 .playback-status {
   display: flex;
   justify-content: center;
+  align-items: center;
+  gap: 16px;
   margin-bottom: 20px;
+}
+
+/* Song Counter */
+.song-counter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 24px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(29, 185, 84, 0.15) 0%, rgba(29, 185, 84, 0.05) 100%);
+  border: 2px solid rgba(29, 185, 84, 0.3);
+}
+
+.counter-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #1DB954;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.counter-number {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1DB954;
+  line-height: 1;
 }
 
 .status-indicator {
@@ -617,5 +646,18 @@
   .revelar-button {
     padding: 14px 40px;
     font-size: 1.2rem;
+  }
+
+  .playback-status {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .song-counter {
+    padding: 10px 20px;
+  }
+
+  .counter-number {
+    font-size: 1.5rem;
   }
 }
