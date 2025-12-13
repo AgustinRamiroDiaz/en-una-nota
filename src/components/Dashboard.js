@@ -3,13 +3,14 @@
  * Music guessing game with Spotify playback controls
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useSpotifyPlayer } from '../hooks/useSpotifyPlayer';
 
 function Dashboard() {
   const { accessToken, logout } = useAuth();
   const [pauseDuration, setPauseDuration] = useState(200); // milliseconds
+  const [isRevealed, setIsRevealed] = useState(false);
 
   // Initialize Spotify Player
   const {
@@ -23,6 +24,11 @@ function Dashboard() {
     playNextAndPause,
     replayAndPause,
   } = useSpotifyPlayer(accessToken, pauseDuration);
+
+  // Reset revealed state when track changes
+  useEffect(() => {
+    setIsRevealed(false);
+  }, [currentTrack?.id]);
 
   return (
     <div className="dashboard-container">
@@ -71,8 +77,20 @@ function Dashboard() {
           </div>
         )}
 
+        {/* Revelar Button */}
+        {currentTrack && !isRevealed && (
+          <div className="revelar-container">
+            <button
+              className="revelar-button"
+              onClick={() => setIsRevealed(true)}
+            >
+              Revelar
+            </button>
+          </div>
+        )}
+
         {/* Playback Controls */}
-        {currentTrack && (
+        {currentTrack && isRevealed && (
           <div className="player-controls">
             <div className="now-playing">
               <div className="track-info">
