@@ -42,10 +42,28 @@ export function useSpotifyPlayer(accessToken, autoPauseDuration = 200) {
       });
 
       // Ready
-      spotifyPlayer.addListener('ready', ({ device_id }) => {
+      spotifyPlayer.addListener('ready', async ({ device_id }) => {
         console.log('Ready with Device ID', device_id);
         setDeviceId(device_id);
         setIsReady(true);
+
+        // Transfer playback to this device
+        try {
+          await fetch('https://api.spotify.com/v1/me/player', {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${accessToken}`
+            },
+            body: JSON.stringify({
+              device_ids: [device_id],
+              play: false
+            })
+          });
+          console.log('Playback transferred to web player');
+        } catch (error) {
+          console.error('Error transferring playback:', error);
+        }
       });
 
       // Not Ready
