@@ -9,7 +9,8 @@ import { useSpotifyPlayer } from '../hooks/useSpotifyPlayer';
 
 function Dashboard() {
   const { accessToken, logout } = useAuth();
-  const [pauseDuration, setPauseDuration] = useState(200); // milliseconds
+  const defaultDuration = parseInt(process.env.REACT_APP_DEFAULT_PREVIEW_DURATION || '1000', 10);
+  const [pauseDuration, setPauseDuration] = useState(defaultDuration);
   const [isRevealed, setIsRevealed] = useState(false);
 
   // Initialize Spotify Player
