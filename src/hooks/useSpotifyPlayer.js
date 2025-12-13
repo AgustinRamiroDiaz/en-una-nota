@@ -30,7 +30,7 @@ export function useSpotifyPlayer(accessToken, autoPauseDuration = 200) {
 
     const initializePlayer = () => {
       spotifyPlayer = new window.Spotify.Player({
-        name: 'Spotify Top Tracks Player',
+        name: 'En una pecota',
         getOAuthToken: cb => { cb(accessToken); },
         volume: 0.5
       });
