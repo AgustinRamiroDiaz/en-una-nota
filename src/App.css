@@ -238,12 +238,26 @@
 
 .duration-slider {
   width: 100%;
-  height: 6px;
-  border-radius: 3px;
-  background: rgba(255, 255, 255, 0.1);
+  height: 28px;
+  background: transparent;
   outline: none;
   -webkit-appearance: none;
   appearance: none;
+  cursor: pointer;
+}
+
+.duration-slider::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.duration-slider::-moz-range-track {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .duration-slider::-webkit-slider-thumb {
