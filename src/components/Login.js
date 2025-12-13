@@ -12,8 +12,8 @@ function Login() {
   return (
     <div className="login-container">
       <div className="login-content">
-        <h1>Spotify Top Tracks</h1>
-        <p>Discover your most played songs on Spotify</p>
+        <h1>En Una Nota</h1>
+        <p>Guess the song from a short preview</p>
         <button className="login-button" onClick={login}>
           Login with Spotify
         </button>
