@@ -82,7 +82,12 @@ function Dashboard() {
           <div className="revelar-container">
             <button
               className="revelar-button"
-              onClick={() => setIsRevealed(true)}
+              onClick={() => {
+                setIsRevealed(true);
+                if (isPaused) {
+                  togglePlay();
+                }
+              }}
             >
               Revelar
             </button>
