@@ -42,6 +42,16 @@ function Dashboard() {
           </div>
         )}
 
+        {/* Playing Status Indicator */}
+        {currentTrack && (
+          <div className="playback-status">
+            <div className={`status-indicator ${!isPaused ? 'playing' : 'paused'}`}>
+              <span className="status-dot"></span>
+              <span className="status-text">{!isPaused ? 'Playing' : 'Paused'}</span>
+            </div>
+          </div>
+        )}
+
         {/* Game Controls */}
         {isReady && (
           <div className="game-controls">
