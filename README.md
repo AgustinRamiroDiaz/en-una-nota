@@ -1,70 +1,133 @@
-# Getting Started with Create React App
+# Spotify Playlist Player
+
+A React web application that lets you play songs from any Spotify playlist using your Spotify Premium account.
+
+## Features
+
+- 🎵 Load any Spotify playlist by URL
+- ▶️ Full-length playback (not just 30-second previews)
+- 🎮 Play/pause controls for each track
+- 🔐 Secure OAuth 2.0 authentication with PKCE
+- 📱 Responsive design for mobile and desktop
+- 🎨 Spotify-themed UI
+
+## Requirements
+
+- **Spotify Premium Account** (required for full playback)
+- Node.js and npm installed
+- Spotify Developer App credentials
+
+## Setup
+
+### 1. Spotify Developer Account Setup
+
+1. Go to [Spotify Developer Dashboard](https://developer.spotify.com/dashboard)
+2. Log in with your Spotify account
+3. Click "Create an App"
+4. Fill in the app name and description
+5. Add the following Redirect URI in app settings:
+   ```
+   http://localhost:3000/callback
+   ```
+6. Copy your **Client ID**
+
+### 2. Environment Configuration
+
+1. Create a `.env` file in the project root:
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Add your Spotify Client ID to `.env`:
+   ```
+   REACT_APP_SPOTIFY_CLIENT_ID=your_client_id_here
+   REACT_APP_REDIRECT_URI=http://localhost:3000/callback
+   ```
+
+### 3. Install Dependencies
+
+```bash
+npm install
+```
+
+### 4. Run the App
+
+```bash
+npm start
+```
+
+The app will open at [http://localhost:3000](http://localhost:3000)
+
+## How to Use
+
+1. **Login**: Click "Login with Spotify" and authorize the app
+2. **Get Playlist URL**:
+   - Open Spotify (web or app)
+   - Navigate to any playlist
+   - Click Share → Copy link to playlist
+3. **Load Playlist**: Paste the URL and click "Load Playlist"
+4. **Play Music**: Click the play button on any track to start playback
+
+## Supported URL Formats
+
+- `https://open.spotify.com/playlist/{playlist_id}`
+- `https://open.spotify.com/playlist/{playlist_id}?si=...`
+- `spotify:playlist:{playlist_id}`
+
+## API Scopes Used
+
+- `user-top-read` - Read top tracks
+- `playlist-read-private` - Read private playlists
+- `playlist-read-collaborative` - Read collaborative playlists
+- `streaming` - Control playback (Premium required)
+- `user-read-playback-state` - Read playback state
+- `user-modify-playback-state` - Modify playback state
+
+## Technology Stack
+
+- React 19
+- Spotify Web API
+- Spotify Web Playback SDK (for Premium playback)
+- OAuth 2.0 with PKCE
+- HTML5 Audio API (fallback for previews)
+
+## Important Notes
+
+- **Spotify Premium is required** for full-length playback
+- Free accounts will only get 30-second previews (if available)
+- Not all tracks have preview URLs available
+- Preview availability varies by region and licensing
+
+## Troubleshooting
+
+### Authentication Issues
+
+If you get "Code verifier not found" error:
+1. Clear browser localStorage
+2. Refresh the page
+3. Try logging in again
+
+### Playlist Not Loading
+
+- Ensure the playlist URL is correct
+- Check that the playlist is public or you have access
+- Verify your access token hasn't expired (logout and login again)
+
+## Development
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+### Available Scripts
 
-In the project directory, you can run:
+- `npm start` - Run development server
+- `npm test` - Run tests
+- `npm run build` - Build for production
+- `npm run eject` - Eject from Create React App (irreversible)
 
-### `npm start`
+## License
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+MIT
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Contributing
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Feel free to submit issues and pull requests!
