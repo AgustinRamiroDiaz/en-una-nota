@@ -37,7 +37,7 @@ jobs:
         env:
           CI: false
           REACT_APP_SPOTIFY_CLIENT_ID: b1a8e7c79c80480eb3e65c8ae0d86b02
-          REACT_APP_REDIRECT_URI: https://agustinramirodiaz.github.io
+          REACT_APP_REDIRECT_URI: https://agustinramirodiaz.github.io/en-una-nota
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
