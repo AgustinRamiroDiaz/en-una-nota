@@ -45,8 +45,9 @@ export function AuthProvider({ children }) {
       const codeVerifier = generateRandomString(128);
       const codeChallenge = await generateCodeChallenge(codeVerifier);
 
-      // Store code verifier for later use in callback
-      sessionStorage.setItem('code_verifier', codeVerifier);
+      // Store code verifier for later use in callback (using localStorage for reliability)
+      localStorage.setItem('pkce_code_verifier', codeVerifier);
+      console.log('Stored code verifier:', codeVerifier.substring(0, 20) + '...');
 
       // Redirect to Spotify authorization
       const authUrl = getAuthorizationUrl(codeChallenge);
@@ -64,8 +65,9 @@ export function AuthProvider({ children }) {
   const handleCallback = async (code) => {
     setIsLoading(true);
     try {
-      // Retrieve the code verifier from session storage
-      const codeVerifier = sessionStorage.getItem('code_verifier');
+      // Retrieve the code verifier from localStorage
+      const codeVerifier = localStorage.getItem('pkce_code_verifier');
+      console.log('Retrieved code verifier:', codeVerifier ? codeVerifier.substring(0, 20) + '...' : 'NULL');
 
       if (!codeVerifier) {
         throw new Error('Code verifier not found. Please try logging in again.');
@@ -86,8 +88,8 @@ export function AuthProvider({ children }) {
       localStorage.setItem('spotify_access_token', tokenData.access_token);
       localStorage.setItem('spotify_expires_at', expirationTime.toString());
 
-      // Clean up session storage
-      sessionStorage.removeItem('code_verifier');
+      // Clean up code verifier from localStorage
+      localStorage.removeItem('pkce_code_verifier');
 
       // Clean up URL (remove code parameter)
       window.history.replaceState({}, document.title, '/');
@@ -109,7 +111,7 @@ export function AuthProvider({ children }) {
     setIsAuthenticated(false);
     localStorage.removeItem('spotify_access_token');
     localStorage.removeItem('spotify_expires_at');
-    sessionStorage.removeItem('code_verifier');
+    localStorage.removeItem('pkce_code_verifier');
   };
 
   /**
