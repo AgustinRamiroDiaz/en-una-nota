@@ -20,7 +20,6 @@ function Dashboard() {
     isPaused,
     currentTrack,
     playerName,
-    playTrack,
     togglePlay,
     nextTrack,
     previousTrack,
@@ -34,6 +33,7 @@ function Dashboard() {
       setIsRevealed(false);
       setSongNumber(prev => prev + 1);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentTrack?.id]);
 
   return (
