@@ -13,6 +13,7 @@ function Dashboard() {
   const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [pauseDuration, setPauseDuration] = useState(200); // milliseconds
 
   // Initialize Spotify Player
   const {
@@ -23,7 +24,8 @@ function Dashboard() {
     togglePlay,
     nextTrack,
     previousTrack,
-  } = useSpotifyPlayer(accessToken);
+    playNextAndPause,
+  } = useSpotifyPlayer(accessToken, pauseDuration);
 
   useEffect(() => {
     async function fetchTracks() {
@@ -75,6 +77,33 @@ function Dashboard() {
         {!isReady && (
           <div className="player-status">
             Initializing Spotify Player...
+          </div>
+        )}
+
+        {/* Game Controls */}
+        {isReady && (
+          <div className="game-controls">
+            <div className="duration-control">
+              <label htmlFor="duration-slider" className="duration-label">
+                Preview Duration: <span className="duration-value">{(pauseDuration / 1000).toFixed(1)}s</span>
+              </label>
+              <input
+                id="duration-slider"
+                type="range"
+                min="100"
+                max="5000"
+                step="100"
+                value={pauseDuration}
+                onChange={(e) => setPauseDuration(Number(e.target.value))}
+                className="duration-slider"
+              />
+            </div>
+            <button
+              className="siguiente-button"
+              onClick={playNextAndPause}
+            >
+              Siguiente
+            </button>
           </div>
         )}
 

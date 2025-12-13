@@ -3,9 +3,9 @@
  * Manages the Spotify player instance and playback state
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
-export function useSpotifyPlayer(accessToken) {
+export function useSpotifyPlayer(accessToken, autoPauseDuration = 200) {
   const [player, setPlayer] = useState(null);
   const [deviceId, setDeviceId] = useState(null);
   const [isReady, setIsReady] = useState(false);
@@ -13,6 +13,14 @@ export function useSpotifyPlayer(accessToken) {
   const [currentTrack, setCurrentTrack] = useState(null);
   const [position, setPosition] = useState(0);
   const [duration, setDuration] = useState(0);
+  const autoPauseTimeoutRef = useRef(null);
+  const shouldAutoPauseRef = useRef(false);
+  const autoPauseDurationRef = useRef(autoPauseDuration);
+
+  // Update the duration ref when it changes
+  useEffect(() => {
+    autoPauseDurationRef.current = autoPauseDuration;
+  }, [autoPauseDuration]);
 
   // Initialize the Spotify Player
   useEffect(() => {
@@ -48,6 +56,20 @@ export function useSpotifyPlayer(accessToken) {
         setIsPaused(state.paused);
         setPosition(state.position);
         setDuration(state.duration);
+
+        // Auto-pause logic: if track is playing and we should auto-pause
+        if (!state.paused && shouldAutoPauseRef.current) {
+          // Clear any existing timeout
+          if (autoPauseTimeoutRef.current) {
+            clearTimeout(autoPauseTimeoutRef.current);
+          }
+
+          // Pause after configured duration
+          autoPauseTimeoutRef.current = setTimeout(() => {
+            spotifyPlayer.pause();
+            shouldAutoPauseRef.current = false;
+          }, autoPauseDurationRef.current);
+        }
       });
 
       // Error handling
@@ -83,6 +105,9 @@ export function useSpotifyPlayer(accessToken) {
 
     // Cleanup
     return () => {
+      if (autoPauseTimeoutRef.current) {
+        clearTimeout(autoPauseTimeoutRef.current);
+      }
       if (spotifyPlayer) {
         spotifyPlayer.disconnect();
       }
@@ -142,6 +167,13 @@ export function useSpotifyPlayer(accessToken) {
     player.setVolume(volume);
   }, [player]);
 
+  // Play next track and auto-pause after 200ms
+  const playNextAndPause = useCallback(() => {
+    if (!player) return;
+    shouldAutoPauseRef.current = true;
+    player.nextTrack();
+  }, [player]);
+
   return {
     player,
     deviceId,
@@ -156,5 +188,6 @@ export function useSpotifyPlayer(accessToken) {
     previousTrack,
     seek,
     setVolume,
+    playNextAndPause,
   };
 }
