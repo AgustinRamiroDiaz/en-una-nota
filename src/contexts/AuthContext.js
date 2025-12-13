@@ -5,7 +5,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { generateRandomString, generateCodeChallenge } from '../utils/pkce';
-import { getAuthorizationUrl, exchangeCodeForToken } from '../utils/spotify';
+import { getAuthorizationUrl, exchangeCodeForToken, REQUIRED_SCOPES } from '../utils/spotify';
 
 const AuthContext = createContext(null);
 
@@ -19,17 +19,22 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const storedToken = localStorage.getItem('spotify_access_token');
     const storedExpiresAt = localStorage.getItem('spotify_expires_at');
+    const storedScopes = localStorage.getItem('spotify_scopes');
 
     if (storedToken && storedExpiresAt) {
       const expirationTime = parseInt(storedExpiresAt, 10);
 
-      // Check if token is still valid
-      if (Date.now() < expirationTime) {
+      // Check if scopes match what we need now
+      const scopesMatch = storedScopes === REQUIRED_SCOPES;
+
+      // Check if token is still valid and has correct scopes
+      if (Date.now() < expirationTime && scopesMatch) {
         setAccessToken(storedToken);
         setExpiresAt(expirationTime);
         setIsAuthenticated(true);
       } else {
-        // Token expired, clear it
+        // Token expired or scopes changed, clear it
+        console.log('Token expired or scopes changed, logging out...');
         logout();
       }
     }
@@ -84,9 +89,10 @@ export function AuthProvider({ children }) {
       setExpiresAt(expirationTime);
       setIsAuthenticated(true);
 
-      // Store token in localStorage for persistence
+      // Store token and scopes in localStorage for persistence
       localStorage.setItem('spotify_access_token', tokenData.access_token);
       localStorage.setItem('spotify_expires_at', expirationTime.toString());
+      localStorage.setItem('spotify_scopes', REQUIRED_SCOPES);
 
       // Clean up code verifier from localStorage
       localStorage.removeItem('pkce_code_verifier');
@@ -111,6 +117,7 @@ export function AuthProvider({ children }) {
     setIsAuthenticated(false);
     localStorage.removeItem('spotify_access_token');
     localStorage.removeItem('spotify_expires_at');
+    localStorage.removeItem('spotify_scopes');
     localStorage.removeItem('pkce_code_verifier');
   };
 
