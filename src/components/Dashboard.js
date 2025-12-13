@@ -25,6 +25,7 @@ function Dashboard() {
     nextTrack,
     previousTrack,
     playNextAndPause,
+    replayAndPause,
   } = useSpotifyPlayer(accessToken, pauseDuration);
 
   useEffect(() => {
@@ -98,12 +99,21 @@ function Dashboard() {
                 className="duration-slider"
               />
             </div>
-            <button
-              className="siguiente-button"
-              onClick={playNextAndPause}
-            >
-              Siguiente
-            </button>
+            <div className="game-buttons">
+              <button
+                className="reintentar-button"
+                onClick={replayAndPause}
+                disabled={!currentTrack}
+              >
+                Reintentar
+              </button>
+              <button
+                className="siguiente-button"
+                onClick={playNextAndPause}
+              >
+                Siguiente
+              </button>
+            </div>
           </div>
         )}
 

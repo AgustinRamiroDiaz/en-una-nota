@@ -167,11 +167,20 @@ export function useSpotifyPlayer(accessToken, autoPauseDuration = 200) {
     player.setVolume(volume);
   }, [player]);
 
-  // Play next track and auto-pause after 200ms
+  // Play next track and auto-pause after configured duration
   const playNextAndPause = useCallback(() => {
     if (!player) return;
     shouldAutoPauseRef.current = true;
     player.nextTrack();
+  }, [player]);
+
+  // Replay current track from beginning and auto-pause after configured duration
+  const replayAndPause = useCallback(() => {
+    if (!player) return;
+    shouldAutoPauseRef.current = true;
+    player.seek(0).then(() => {
+      player.resume();
+    });
   }, [player]);
 
   return {
@@ -189,5 +198,6 @@ export function useSpotifyPlayer(accessToken, autoPauseDuration = 200) {
     seek,
     setVolume,
     playNextAndPause,
+    replayAndPause,
   };
 }
