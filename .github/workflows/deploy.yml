@@ -36,8 +36,8 @@ jobs:
         run: npm run build
         env:
           CI: false
-          REACT_APP_SPOTIFY_CLIENT_ID: ${{ secrets.REACT_APP_SPOTIFY_CLIENT_ID }}
-          REACT_APP_REDIRECT_URI: ${{ secrets.REACT_APP_REDIRECT_URI }}
+          REACT_APP_SPOTIFY_CLIENT_ID: b1a8e7c79c80480eb3e65c8ae0d86b02
+          REACT_APP_REDIRECT_URI: https://agustinramirodiaz.github.io
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
