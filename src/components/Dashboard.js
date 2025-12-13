@@ -19,6 +19,7 @@ function Dashboard() {
     isReady,
     isPaused,
     currentTrack,
+    playerName,
     playTrack,
     togglePlay,
     nextTrack,
@@ -38,7 +39,7 @@ function Dashboard() {
   return (
     <div className="dashboard-container">
       <div className="dashboard-content">
-        <h1>En Una Nota</h1>
+        <h1>{playerName || 'En Una Nota'}</h1>
 
         {!isReady && (
           <div className="player-status">

@@ -4,6 +4,7 @@
  */
 
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { getRandomAnimalName } from '../utils/animalNames';
 
 export function useSpotifyPlayer(accessToken, autoPauseDuration = 200) {
   const [player, setPlayer] = useState(null);
@@ -13,6 +14,7 @@ export function useSpotifyPlayer(accessToken, autoPauseDuration = 200) {
   const [currentTrack, setCurrentTrack] = useState(null);
   const [position, setPosition] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [playerName, setPlayerName] = useState('');
   const autoPauseTimeoutRef = useRef(null);
   const shouldAutoPauseRef = useRef(false);
   const autoPauseDurationRef = useRef(autoPauseDuration);
@@ -29,8 +31,12 @@ export function useSpotifyPlayer(accessToken, autoPauseDuration = 200) {
     let spotifyPlayer = null;
 
     const initializePlayer = () => {
+      const animalName = getRandomAnimalName();
+      const name = `En una pecota ${animalName}`;
+      setPlayerName(name);
+
       spotifyPlayer = new window.Spotify.Player({
-        name: 'En una pecota',
+        name: name,
         getOAuthToken: cb => { cb(accessToken); },
         volume: 0.5
       });
@@ -191,6 +197,7 @@ export function useSpotifyPlayer(accessToken, autoPauseDuration = 200) {
     currentTrack,
     position,
     duration,
+    playerName,
     playTrack,
     togglePlay,
     nextTrack,
