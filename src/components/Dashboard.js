@@ -13,6 +13,9 @@ function Dashboard() {
   const [pauseDuration, setPauseDuration] = useState(defaultDuration);
   const [isRevealed, setIsRevealed] = useState(false);
   const [songNumber, setSongNumber] = useState(0);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
 
   // Initialize Spotify Player
   const {
@@ -25,6 +28,8 @@ function Dashboard() {
     previousTrack,
     playNextAndPause,
     replayAndPause,
+    searchPlaylists,
+    playPlaylist,
   } = useSpotifyPlayer(accessToken, pauseDuration);
 
   // Reset revealed state and increment song number when track changes
@@ -36,6 +41,22 @@ function Dashboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentTrack?.id]);
 
+  // Handle search
+  const handleSearch = async () => {
+    if (!searchQuery.trim()) return;
+    setIsSearching(true);
+    const results = await searchPlaylists(searchQuery);
+    setSearchResults(results);
+    setIsSearching(false);
+  };
+
+  // Handle playlist selection from search results
+  const handleSelectPlaylist = async (playlistUri) => {
+    await playPlaylist(playlistUri);
+    setSearchResults([]);
+    setSearchQuery('');
+  };
+
   return (
     <div className="dashboard-container">
       <div className="dashboard-content">
@@ -44,6 +65,49 @@ function Dashboard() {
         {!isReady && (
           <div className="player-status">
             Initializing Spotify Player...
+          </div>
+        )}
+
+        {/* Search */}
+        {isReady && (
+          <div className="search-container">
+            <div className="search-input-wrapper">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                placeholder="Buscar playlist..."
+                className="search-input"
+              />
+              <button
+                onClick={handleSearch}
+                disabled={isSearching}
+                className="search-button"
+              >
+                {isSearching ? '...' : 'Buscar'}
+              </button>
+            </div>
+
+            {searchResults.length > 0 && (
+              <div className="search-results">
+                {searchResults.map((playlist) => (
+                  <button
+                    key={playlist.id}
+                    onClick={() => handleSelectPlaylist(playlist.uri)}
+                    className="search-result-item"
+                  >
+                    {playlist.image && (
+                      <img src={playlist.image} alt="" className="search-result-image" />
+                    )}
+                    <div className="search-result-info">
+                      <span className="search-result-name">{playlist.name}</span>
+                      <span className="search-result-artist">{playlist.owner} · {playlist.trackCount} canciones</span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
