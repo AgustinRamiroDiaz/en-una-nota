@@ -12,6 +12,7 @@ function Dashboard() {
   const defaultDuration = parseInt(process.env.REACT_APP_DEFAULT_PREVIEW_DURATION || '1000', 10);
   const [pauseDuration, setPauseDuration] = useState(defaultDuration);
   const [isRevealed, setIsRevealed] = useState(false);
+  const [isHintShown, setIsHintShown] = useState(false);
   const [songNumber, setSongNumber] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
@@ -32,10 +33,11 @@ function Dashboard() {
     playPlaylist,
   } = useSpotifyPlayer(accessToken, pauseDuration);
 
-  // Reset revealed state and increment song number when track changes
+  // Reset revealed/hint state and increment song number when track changes
   useEffect(() => {
     if (currentTrack) {
       setIsRevealed(false);
+      setIsHintShown(false);
       setSongNumber(prev => prev + 1);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -168,9 +170,25 @@ function Dashboard() {
           </div>
         )}
 
-        {/* Revelar Button */}
+        {/* Hint Display */}
+        {currentTrack && !isRevealed && isHintShown && (
+          <div className="hint-display">
+            <span className="hint-label">Artista:</span>
+            <span className="hint-value">{currentTrack.artists.map(artist => artist.name).join(', ')}</span>
+          </div>
+        )}
+
+        {/* Hint and Revelar Buttons */}
         {currentTrack && !isRevealed && (
           <div className="revelar-container">
+            {!isHintShown && (
+              <button
+                className="hint-button"
+                onClick={() => setIsHintShown(true)}
+              >
+                Pista
+              </button>
+            )}
             <button
               className="revelar-button"
               onClick={() => {
