@@ -17,6 +17,13 @@ export function AuthProvider({ children }) {
 
   // Check for existing token in localStorage on mount
   useEffect(() => {
+    // Don't clear anything if we're in the middle of an OAuth callback
+    const urlParams = new URLSearchParams(window.location.search);
+    const hasAuthCode = urlParams.get('code');
+    if (hasAuthCode) {
+      return; // Let handleCallback deal with this
+    }
+
     const storedToken = localStorage.getItem('spotify_access_token');
     const storedExpiresAt = localStorage.getItem('spotify_expires_at');
     const storedScopes = localStorage.getItem('spotify_scopes');
@@ -33,9 +40,11 @@ export function AuthProvider({ children }) {
         setExpiresAt(expirationTime);
         setIsAuthenticated(true);
       } else {
-        // Token expired or scopes changed, clear it
-        console.log('Token expired or scopes changed, logging out...');
-        logout();
+        // Token expired or scopes changed, clear it (but preserve code verifier)
+        console.log('Token expired or scopes changed, clearing old token...');
+        localStorage.removeItem('spotify_access_token');
+        localStorage.removeItem('spotify_expires_at');
+        localStorage.removeItem('spotify_scopes');
       }
     }
   }, []);
@@ -68,11 +77,22 @@ export function AuthProvider({ children }) {
    * @param {string} code - Authorization code from Spotify
    */
   const handleCallback = async (code) => {
+    // Prevent double-handling
+    if (isLoading) {
+      console.log('Already handling callback, skipping...');
+      return;
+    }
+
     setIsLoading(true);
+
+    // Small delay to ensure localStorage is ready (fixes race condition on first load)
+    await new Promise(resolve => setTimeout(resolve, 100));
+
     try {
       // Retrieve the code verifier from localStorage
       const codeVerifier = localStorage.getItem('pkce_code_verifier');
       console.log('Retrieved code verifier:', codeVerifier ? codeVerifier.substring(0, 20) + '...' : 'NULL');
+      console.log('All localStorage keys:', Object.keys(localStorage));
 
       if (!codeVerifier) {
         throw new Error('Code verifier not found. Please try logging in again.');
@@ -102,7 +122,13 @@ export function AuthProvider({ children }) {
     } catch (error) {
       console.error('Authentication callback failed:', error);
       alert(`Authentication failed: ${error.message}`);
-      logout();
+      // Don't call logout() here - it clears the code verifier
+      // Just reset state and let user try again
+      setAccessToken(null);
+      setExpiresAt(null);
+      setIsAuthenticated(false);
+      // Clean up URL so user can try again
+      window.history.replaceState({}, document.title, '/');
     } finally {
       setIsLoading(false);
     }

@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:developer.spotify.com)",
+      "WebFetch(domain:magalipujol.github.io)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:api.github.com)",
+      "Bash(curl:*)",
+      "Bash(npm run build:*)",
+      "Bash(npx react-scripts build:*)",
+      "Bash(npm run)"
+    ]
+  }
+}
