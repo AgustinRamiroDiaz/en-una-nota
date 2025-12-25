@@ -152,6 +152,13 @@ function Dashboard() {
                 Reintentar
               </button>
               <button
+                className="pause-button"
+                onClick={togglePlay}
+                disabled={!currentTrack}
+              >
+                {isPaused ? '▶ Play' : '⏸ Pausa'}
+              </button>
+              <button
                 className="siguiente-button"
                 onClick={playNextAndPause}
               >
