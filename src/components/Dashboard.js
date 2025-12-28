@@ -142,54 +142,6 @@ function Dashboard() {
 
   return (
     <div className="dashboard-container">
-      {/* Top Right Actions */}
-      <div className="top-right-actions">
-        {/* Search Button */}
-        {isReady && (
-          <button
-            className="search-icon-button"
-            onClick={() => setIsSearchModalOpen(true)}
-            aria-label="Search playlists"
-          >
-            🔍
-          </button>
-        )}
-
-        {/* Profile Menu */}
-        <div className="profile-menu-container" ref={profileMenuRef}>
-          <button
-            className="profile-button"
-            onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
-            aria-label="User menu"
-          >
-            {userProfile?.images?.[0]?.url ? (
-              <img
-                src={userProfile.images[0].url}
-                alt={userProfile.display_name || 'User'}
-                className="profile-avatar"
-              />
-            ) : (
-              <div className="profile-avatar-placeholder">
-                {userProfile?.display_name?.[0]?.toUpperCase() || '?'}
-              </div>
-            )}
-          </button>
-          {isProfileMenuOpen && (
-            <div className="profile-dropdown">
-              {userProfile && (
-                <div className="profile-info">
-                  <span className="profile-name">{userProfile.display_name}</span>
-                  <span className="profile-email">{userProfile.email}</span>
-                </div>
-              )}
-              <button className="profile-logout-button" onClick={logout}>
-                Logout
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
-
       {/* Search Modal */}
       {isSearchModalOpen && (
         <div className="search-modal-overlay" onClick={() => setIsSearchModalOpen(false)}>
@@ -249,7 +201,55 @@ function Dashboard() {
       )}
 
       <div className="dashboard-content">
-        <h1>{playerName || 'En Una Nota'}</h1>
+        <div className="dashboard-header">
+          <h1>{playerName || 'En Una Nota'}</h1>
+          <div className="header-actions">
+            {/* Search Button */}
+            {isReady && (
+              <button
+                className="search-icon-button"
+                onClick={() => setIsSearchModalOpen(true)}
+                aria-label="Search playlists"
+              >
+                🔍
+              </button>
+            )}
+
+            {/* Profile Menu */}
+            <div className="profile-menu-container" ref={profileMenuRef}>
+              <button
+                className="profile-button"
+                onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+                aria-label="User menu"
+              >
+                {userProfile?.images?.[0]?.url ? (
+                  <img
+                    src={userProfile.images[0].url}
+                    alt={userProfile.display_name || 'User'}
+                    className="profile-avatar"
+                  />
+                ) : (
+                  <div className="profile-avatar-placeholder">
+                    {userProfile?.display_name?.[0]?.toUpperCase() || '?'}
+                  </div>
+                )}
+              </button>
+              {isProfileMenuOpen && (
+                <div className="profile-dropdown">
+                  {userProfile && (
+                    <div className="profile-info">
+                      <span className="profile-name">{userProfile.display_name}</span>
+                      <span className="profile-email">{userProfile.email}</span>
+                    </div>
+                  )}
+                  <button className="profile-logout-button" onClick={logout}>
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
 
         {!isReady && (
           <div className="player-status">

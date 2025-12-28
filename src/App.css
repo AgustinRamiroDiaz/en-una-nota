@@ -77,8 +77,6 @@
 
 .dashboard-content h1 {
   font-size: 2.5rem;
-  margin-bottom: 40px;
-  text-align: center;
   color: #1DB954;
   font-weight: 700;
 }
@@ -147,12 +145,20 @@
   transform: scale(0.98);
 }
 
-/* Top Right Actions */
-.top-right-actions {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 1000;
+/* Dashboard Header */
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 30px;
+}
+
+.dashboard-header h1 {
+  margin: 0;
+}
+
+.header-actions {
   display: flex;
   align-items: center;
   gap: 12px;
