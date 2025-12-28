@@ -1080,8 +1080,8 @@
 }
 
 .album-art {
-  width: 80px;
-  height: 80px;
+  width: 100%;
+  height: 100%;
   border-radius: 8px;
   object-fit: cover;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
@@ -1148,24 +1148,32 @@
 }
 
 .track-hidden {
-  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.4);
   font-style: italic;
   transition: color 0.2s ease;
 }
 
 .revelar-hint {
-  font-size: 0.75rem;
-  font-weight: 400;
-  opacity: 0.6;
-  font-style: normal;
+  display: inline-flex;
+  align-items: center;
+  opacity: 0.5;
+  transition: opacity 0.2s ease;
+}
+
+.track-name-container.hidden:hover .revelar-hint,
+.track-artist-container.hidden:hover .revelar-hint {
+  opacity: 1;
 }
 
 .album-art-hidden .revelar-hint {
   display: block;
-  font-size: 0.7rem;
-  margin-top: 4px;
+  margin-top: 6px;
+  opacity: 0.4;
 }
 
 .track-details .track-name {
@@ -1300,11 +1308,6 @@
   .track-item {
     font-size: 1rem;
     padding: 16px 20px;
-  }
-
-  .album-art {
-    width: 60px;
-    height: 60px;
   }
 
   .track-details .track-name {
