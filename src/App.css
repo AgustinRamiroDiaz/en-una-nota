@@ -780,6 +780,29 @@
   gap: 16px;
 }
 
+/* Album Art Container - Clickable to reveal */
+.album-art-container {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.album-art-container.hidden {
+  cursor: pointer;
+}
+
+.album-art-container.hidden:hover .album-art-hidden {
+  background: linear-gradient(135deg, rgba(29, 185, 84, 0.3) 0%, rgba(29, 185, 84, 0.15) 100%);
+  border-color: #1DB954;
+}
+
+.album-art-container.hidden:hover .album-art-hidden span {
+  transform: scale(1.1);
+  color: #1DB954;
+}
+
 .album-art {
   width: 80px;
   height: 80px;
@@ -788,16 +811,78 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
+.album-art-hidden {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.album-art-hidden span {
+  font-size: 2rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.5);
+  transition: all 0.2s ease;
+}
+
 .track-details {
   flex: 1;
   text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Track Name Container - Clickable to reveal */
+.track-name-container,
+.track-artist-container {
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.track-name-container.hidden,
+.track-artist-container.hidden {
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+}
+
+.track-name-container.hidden:hover,
+.track-artist-container.hidden:hover {
+  background: rgba(29, 185, 84, 0.15);
+  border-color: rgba(29, 185, 84, 0.5);
+}
+
+.track-name-container.hidden:hover .track-hidden,
+.track-artist-container.hidden:hover .track-hidden {
+  color: #1DB954;
+}
+
+.track-name-container.revealed,
+.track-artist-container.revealed {
+  padding: 0;
+  background: none;
+  border: none;
+}
+
+.track-hidden {
+  font-size: 1rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.5);
+  font-style: italic;
+  transition: color 0.2s ease;
 }
 
 .track-details .track-name {
   font-size: 1.2rem;
   font-weight: 700;
   color: white;
-  margin-bottom: 4px;
 }
 
 .track-details .track-artist {
@@ -848,6 +933,12 @@
 .control-btn.play-pause:hover {
   background-color: #1ed760;
   border-color: #1ed760;
+}
+
+/* Revelar button inside player */
+.player-controls .revelar-button {
+  margin-top: 16px;
+  width: 100%;
 }
 
 /* Responsive Design */

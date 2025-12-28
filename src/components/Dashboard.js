@@ -12,8 +12,9 @@ function Dashboard() {
   const defaultDuration = parseInt(process.env.REACT_APP_DEFAULT_PREVIEW_DURATION || '1000', 10);
   const [defaultPreviewDuration, setDefaultPreviewDuration] = useState(defaultDuration);
   const [currentPreviewDuration, setCurrentPreviewDuration] = useState(defaultDuration);
-  const [isRevealed, setIsRevealed] = useState(false);
-  const [isHintShown, setIsHintShown] = useState(false);
+  const [isArtistRevealed, setIsArtistRevealed] = useState(false);
+  const [isTitleRevealed, setIsTitleRevealed] = useState(false);
+  const [isAlbumRevealed, setIsAlbumRevealed] = useState(false);
   const [songNumber, setSongNumber] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
@@ -34,16 +35,30 @@ function Dashboard() {
     playPlaylist,
   } = useSpotifyPlayer(accessToken, currentPreviewDuration);
 
-  // Reset revealed/hint state and increment song number when track changes
+  // Reset revealed state and increment song number when track changes
   useEffect(() => {
     if (currentTrack) {
-      setIsRevealed(false);
-      setIsHintShown(false);
+      setIsArtistRevealed(false);
+      setIsTitleRevealed(false);
+      setIsAlbumRevealed(false);
       setSongNumber(prev => prev + 1);
       setCurrentPreviewDuration(defaultPreviewDuration);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentTrack?.id]);
+
+  // Helper to check if everything is revealed
+  const isFullyRevealed = isArtistRevealed && isTitleRevealed && isAlbumRevealed;
+
+  // Reveal all and play
+  const handleRevealAll = () => {
+    setIsArtistRevealed(true);
+    setIsTitleRevealed(true);
+    setIsAlbumRevealed(true);
+    if (isPaused) {
+      togglePlay();
+    }
+  };
 
   const handleDefaultDurationChange = (value) => {
     setDefaultPreviewDuration((prevDefault) => {
@@ -223,55 +238,58 @@ function Dashboard() {
           </div>
         )}
 
-        {/* Hint Display */}
-        {currentTrack && !isRevealed && isHintShown && (
-          <div className="hint-display">
-            <span className="hint-label">Artista:</span>
-            <span className="hint-value">{currentTrack.artists.map(artist => artist.name).join(', ')}</span>
-          </div>
-        )}
-
-        {/* Hint and Revelar Buttons */}
-        {currentTrack && !isRevealed && (
-          <div className="revelar-container">
-            {!isHintShown && (
-              <button
-                className="hint-button"
-                onClick={() => setIsHintShown(true)}
-              >
-                Pista
-              </button>
-            )}
-            <button
-              className="revelar-button"
-              onClick={() => {
-                setIsRevealed(true);
-                if (isPaused) {
-                  togglePlay();
-                }
-              }}
-            >
-              Revelar
-            </button>
-          </div>
-        )}
-
-        {/* Playback Controls */}
-        {currentTrack && isRevealed && (
+        {/* Spotify Player - Always visible when track exists */}
+        {currentTrack && (
           <div className="player-controls">
             <div className="now-playing">
               <div className="track-info">
-                {currentTrack.album.images[0] && (
-                  <img
-                    src={currentTrack.album.images[0].url}
-                    alt={currentTrack.name}
-                    className="album-art"
-                  />
-                )}
+                {/* Album Art - Hidden or Revealed */}
+                <div 
+                  className={`album-art-container ${isAlbumRevealed ? 'revealed' : 'hidden'}`}
+                  onClick={() => !isAlbumRevealed && setIsAlbumRevealed(true)}
+                  role={!isAlbumRevealed ? 'button' : undefined}
+                  tabIndex={!isAlbumRevealed ? 0 : undefined}
+                >
+                  {isAlbumRevealed && currentTrack.album.images[0] ? (
+                    <img
+                      src={currentTrack.album.images[0].url}
+                      alt={currentTrack.name}
+                      className="album-art"
+                    />
+                  ) : (
+                    <div className="album-art-hidden">
+                      <span>?</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Track Details - Each can be revealed individually */}
                 <div className="track-details">
-                  <div className="track-name">{currentTrack.name}</div>
-                  <div className="track-artist">
-                    {currentTrack.artists.map(artist => artist.name).join(', ')}
+                  <div 
+                    className={`track-name-container ${isTitleRevealed ? 'revealed' : 'hidden'}`}
+                    onClick={() => !isTitleRevealed && setIsTitleRevealed(true)}
+                    role={!isTitleRevealed ? 'button' : undefined}
+                    tabIndex={!isTitleRevealed ? 0 : undefined}
+                  >
+                    {isTitleRevealed ? (
+                      <span className="track-name">{currentTrack.name}</span>
+                    ) : (
+                      <span className="track-hidden">Canción ???</span>
+                    )}
+                  </div>
+                  <div 
+                    className={`track-artist-container ${isArtistRevealed ? 'revealed' : 'hidden'}`}
+                    onClick={() => !isArtistRevealed && setIsArtistRevealed(true)}
+                    role={!isArtistRevealed ? 'button' : undefined}
+                    tabIndex={!isArtistRevealed ? 0 : undefined}
+                  >
+                    {isArtistRevealed ? (
+                      <span className="track-artist">
+                        {currentTrack.artists.map(artist => artist.name).join(', ')}
+                      </span>
+                    ) : (
+                      <span className="track-hidden">Artista ???</span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -284,6 +302,13 @@ function Dashboard() {
               </button>
               <button onClick={nextTrack} className="control-btn">⏭</button>
             </div>
+
+            {/* Revelar button - only shown when not everything is revealed */}
+            {!isFullyRevealed && (
+              <button className="revelar-button" onClick={handleRevealAll}>
+                Revelar Todo
+              </button>
+            )}
           </div>
         )}
 
