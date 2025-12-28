@@ -22,6 +22,7 @@ function Dashboard() {
   const [userProfile, setUserProfile] = useState(null);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+  const [showDefaultDuration, setShowDefaultDuration] = useState(false);
   const profileMenuRef = useRef(null);
   const searchModalRef = useRef(null);
   const searchInputRef = useRef(null);
@@ -261,9 +262,9 @@ function Dashboard() {
         {isReady && (
           <div className="game-controls">
             <div className="duration-controls">
-              <div className="duration-control">
+              <div className="duration-row">
                 <label htmlFor="current-duration-slider" className="duration-label">
-                  Current preview duration: <span className="duration-value">{(currentPreviewDuration / 1000).toFixed(1)}s</span>
+                  Preview: <span className="duration-value">{(currentPreviewDuration / 1000).toFixed(1)}s</span>
                 </label>
                 <input
                   id="current-duration-slider"
@@ -275,25 +276,32 @@ function Dashboard() {
                   onChange={(e) => setCurrentPreviewDuration(Number(e.target.value))}
                   className="duration-slider"
                 />
-                <div className="duration-helper">Applies only to the song that is playing now.</div>
+                <button
+                  className="duration-toggle-btn"
+                  onClick={() => setShowDefaultDuration(!showDefaultDuration)}
+                  title="Default duration settings"
+                >
+                  ⚙
+                </button>
               </div>
 
-              <div className="duration-control secondary">
-                <label htmlFor="default-duration-slider" className="duration-label">
-                  Default preview duration: <span className="duration-value">{(defaultPreviewDuration / 1000).toFixed(1)}s</span>
-                </label>
-                <input
-                  id="default-duration-slider"
-                  type="range"
-                  min="100"
-                  max="5000"
-                  step="100"
-                  value={defaultPreviewDuration}
-                  onChange={(e) => handleDefaultDurationChange(Number(e.target.value))}
-                  className="duration-slider"
-                />
-                <div className="duration-helper">New songs reset to this duration.</div>
-              </div>
+              {showDefaultDuration && (
+                <div className="duration-row secondary">
+                  <label htmlFor="default-duration-slider" className="duration-label">
+                    Default: <span className="duration-value">{(defaultPreviewDuration / 1000).toFixed(1)}s</span>
+                  </label>
+                  <input
+                    id="default-duration-slider"
+                    type="range"
+                    min="100"
+                    max="5000"
+                    step="100"
+                    value={defaultPreviewDuration}
+                    onChange={(e) => handleDefaultDurationChange(Number(e.target.value))}
+                    className="duration-slider"
+                  />
+                </div>
+              )}
             </div>
             <div className="reintentar-section">
               <span className="reintentar-label">Reintentar</span>
