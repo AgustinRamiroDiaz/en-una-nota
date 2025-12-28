@@ -9,9 +9,16 @@ import { useSpotifyPlayer } from '../hooks/useSpotifyPlayer';
 
 function Dashboard() {
   const { accessToken, logout } = useAuth();
-  const defaultDuration = parseInt(process.env.REACT_APP_DEFAULT_PREVIEW_DURATION || '1000', 10);
-  const [defaultPreviewDuration, setDefaultPreviewDuration] = useState(defaultDuration);
-  const [currentPreviewDuration, setCurrentPreviewDuration] = useState(defaultDuration);
+  const envDefaultDuration = parseInt(process.env.REACT_APP_DEFAULT_PREVIEW_DURATION || '1000', 10);
+  
+  // Load default preview duration from localStorage or use env variable
+  const getInitialDefaultDuration = () => {
+    const saved = localStorage.getItem('defaultPreviewDuration');
+    return saved ? parseInt(saved, 10) : envDefaultDuration;
+  };
+  
+  const [defaultPreviewDuration, setDefaultPreviewDuration] = useState(getInitialDefaultDuration);
+  const [currentPreviewDuration, setCurrentPreviewDuration] = useState(getInitialDefaultDuration);
   const [isArtistRevealed, setIsArtistRevealed] = useState(false);
   const [isTitleRevealed, setIsTitleRevealed] = useState(false);
   const [isAlbumRevealed, setIsAlbumRevealed] = useState(false);
@@ -90,6 +97,11 @@ function Dashboard() {
     document.addEventListener('keydown', handleEscape);
     return () => document.removeEventListener('keydown', handleEscape);
   }, []);
+
+  // Save default preview duration to localStorage
+  useEffect(() => {
+    localStorage.setItem('defaultPreviewDuration', defaultPreviewDuration.toString());
+  }, [defaultPreviewDuration]);
 
   // Reset revealed state and increment song number when track changes
   useEffect(() => {
