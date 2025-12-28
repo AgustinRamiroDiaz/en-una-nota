@@ -305,6 +305,93 @@ function Dashboard() {
                 </div>
               )}
             </div>
+          </div>
+        )}
+
+        {/* Bottom Section - Player and Reintentar */}
+        <div className="bottom-section">
+          {/* Spotify Player - Always visible when track exists */}
+          {currentTrack && (
+            <div className="player-controls">
+              <div className="song-counter-badge">#{songNumber}</div>
+              <div className="now-playing">
+                <div className="track-info">
+                  {/* Album Art - Hidden or Revealed */}
+                  <div 
+                    className={`album-art-container ${isAlbumRevealed ? 'revealed' : 'hidden'}`}
+                    onClick={() => !isAlbumRevealed && setIsAlbumRevealed(true)}
+                    role={!isAlbumRevealed ? 'button' : undefined}
+                    tabIndex={!isAlbumRevealed ? 0 : undefined}
+                  >
+                    {isAlbumRevealed && currentTrack.album.images[0] ? (
+                      <img
+                        src={currentTrack.album.images[0].url}
+                        alt={currentTrack.name}
+                        className="album-art"
+                      />
+                    ) : (
+                      <div className="album-art-hidden">
+                        <span>?</span>
+                        <span className="revelar-hint">revelar</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Track Details - Each can be revealed individually */}
+                  <div className="track-details">
+                    <div 
+                      className={`track-name-container ${isTitleRevealed ? 'revealed' : 'hidden'}`}
+                      onClick={() => !isTitleRevealed && setIsTitleRevealed(true)}
+                      role={!isTitleRevealed ? 'button' : undefined}
+                      tabIndex={!isTitleRevealed ? 0 : undefined}
+                    >
+                      {isTitleRevealed ? (
+                        <span className="track-name">{currentTrack.name}</span>
+                      ) : (
+                        <span className="track-hidden">Canción ??? <span className="revelar-hint">(revelar)</span></span>
+                      )}
+                    </div>
+                    <div 
+                      className={`track-artist-container ${isArtistRevealed ? 'revealed' : 'hidden'}`}
+                      onClick={() => !isArtistRevealed && setIsArtistRevealed(true)}
+                      role={!isArtistRevealed ? 'button' : undefined}
+                      tabIndex={!isArtistRevealed ? 0 : undefined}
+                    >
+                      {isArtistRevealed ? (
+                        <span className="track-artist">
+                          {currentTrack.artists.map(artist => artist.name).join(', ')}
+                        </span>
+                      ) : (
+                        <span className="track-hidden">Artista ??? <span className="revelar-hint">(revelar)</span></span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="control-buttons">
+                <button 
+                  onClick={handleRevealAll} 
+                  className={`control-btn reveal-btn ${isFullyRevealed ? 'revealed' : ''}`}
+                  disabled={isFullyRevealed}
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
+                <button onClick={togglePlay} className={`control-btn play-pause ${!isPaused ? 'playing' : 'paused'}`}>
+                  {isPaused ? '▶' : '⏸'}
+                </button>
+                <button onClick={playNextAndPause} className="control-btn next-btn">
+                  Siguiente ⏭
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Reintentar Section */}
+          {isReady && (
             <div className="reintentar-section">
               <span className="reintentar-label">Reintentar</span>
               <div className="reintentar-buttons">
@@ -325,89 +412,8 @@ function Dashboard() {
                 ))}
               </div>
             </div>
-
-          </div>
-        )}
-
-        {/* Spotify Player - Always visible when track exists */}
-        {currentTrack && (
-          <div className="player-controls">
-            <div className="song-counter-badge">#{songNumber}</div>
-            <div className="now-playing">
-              <div className="track-info">
-                {/* Album Art - Hidden or Revealed */}
-                <div 
-                  className={`album-art-container ${isAlbumRevealed ? 'revealed' : 'hidden'}`}
-                  onClick={() => !isAlbumRevealed && setIsAlbumRevealed(true)}
-                  role={!isAlbumRevealed ? 'button' : undefined}
-                  tabIndex={!isAlbumRevealed ? 0 : undefined}
-                >
-                  {isAlbumRevealed && currentTrack.album.images[0] ? (
-                    <img
-                      src={currentTrack.album.images[0].url}
-                      alt={currentTrack.name}
-                      className="album-art"
-                    />
-                  ) : (
-                    <div className="album-art-hidden">
-                      <span>?</span>
-                      <span className="revelar-hint">revelar</span>
-                    </div>
-                  )}
-                </div>
-
-                {/* Track Details - Each can be revealed individually */}
-                <div className="track-details">
-                  <div 
-                    className={`track-name-container ${isTitleRevealed ? 'revealed' : 'hidden'}`}
-                    onClick={() => !isTitleRevealed && setIsTitleRevealed(true)}
-                    role={!isTitleRevealed ? 'button' : undefined}
-                    tabIndex={!isTitleRevealed ? 0 : undefined}
-                  >
-                    {isTitleRevealed ? (
-                      <span className="track-name">{currentTrack.name}</span>
-                    ) : (
-                      <span className="track-hidden">Canción ??? <span className="revelar-hint">(revelar)</span></span>
-                    )}
-                  </div>
-                  <div 
-                    className={`track-artist-container ${isArtistRevealed ? 'revealed' : 'hidden'}`}
-                    onClick={() => !isArtistRevealed && setIsArtistRevealed(true)}
-                    role={!isArtistRevealed ? 'button' : undefined}
-                    tabIndex={!isArtistRevealed ? 0 : undefined}
-                  >
-                    {isArtistRevealed ? (
-                      <span className="track-artist">
-                        {currentTrack.artists.map(artist => artist.name).join(', ')}
-                      </span>
-                    ) : (
-                      <span className="track-hidden">Artista ??? <span className="revelar-hint">(revelar)</span></span>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="control-buttons">
-              <button 
-                onClick={handleRevealAll} 
-                className={`control-btn reveal-btn ${isFullyRevealed ? 'revealed' : ''}`}
-                disabled={isFullyRevealed}
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                  <circle cx="12" cy="12" r="3"></circle>
-                </svg>
-              </button>
-              <button onClick={togglePlay} className={`control-btn play-pause ${!isPaused ? 'playing' : 'paused'}`}>
-                {isPaused ? '▶' : '⏸'}
-              </button>
-              <button onClick={playNextAndPause} className="control-btn next-btn">
-                Siguiente ⏭
-              </button>
-            </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
