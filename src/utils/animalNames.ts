@@ -2,7 +2,7 @@
  * Array of animal names for generating unique player names
  */
 
-export const animalNames = [
+export const animalNames: string[] = [
   'Perro', 'Gato', 'León', 'Tigre', 'Elefante',
   'Jirafa', 'Cebra', 'Hipopótamo', 'Rinoceronte', 'Cocodrilo',
   'Serpiente', 'Águila', 'Halcón', 'Búho', 'Loro',
@@ -27,9 +27,10 @@ export const animalNames = [
 
 /**
  * Gets a random animal name from the array
- * @returns {string} Random animal name
+ * @returns Random animal name
  */
-export function getRandomAnimalName() {
+export function getRandomAnimalName(): string {
   const randomIndex = Math.floor(Math.random() * animalNames.length);
   return animalNames[randomIndex];
 }
+

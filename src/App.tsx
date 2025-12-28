@@ -4,7 +4,7 @@ import { useAuth } from './contexts/AuthContext';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 
-function App() {
+function App(): React.ReactElement {
   const { isAuthenticated, isLoading, handleCallback } = useAuth();
   const hasHandledCallback = useRef(false);
 
@@ -38,3 +38,4 @@ function App() {
 }
 
 export default App;
+

@@ -3,15 +3,29 @@
  * Manages Spotify OAuth authentication state and token management
  */
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { generateRandomString, generateCodeChallenge } from '../utils/pkce';
 import { getAuthorizationUrl, exchangeCodeForToken, REQUIRED_SCOPES } from '../utils/spotify';
 
-const AuthContext = createContext(null);
+interface AuthContextValue {
+  accessToken: string | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  login: () => Promise<void>;
+  logout: () => void;
+  handleCallback: (code: string) => Promise<void>;
+  isTokenValid: () => boolean;
+}
 
-export function AuthProvider({ children }) {
-  const [accessToken, setAccessToken] = useState(null);
-  const [expiresAt, setExpiresAt] = useState(null);
+const AuthContext = createContext<AuthContextValue | null>(null);
+
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+export function AuthProvider({ children }: AuthProviderProps): React.ReactElement {
+  const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [expiresAt, setExpiresAt] = useState<number | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -52,7 +66,7 @@ export function AuthProvider({ children }) {
   /**
    * Initiates the Spotify login flow with PKCE
    */
-  const login = async () => {
+  const login = async (): Promise<void> => {
     setIsLoading(true);
     try {
       // Generate PKCE code verifier and challenge
@@ -74,9 +88,8 @@ export function AuthProvider({ children }) {
 
   /**
    * Handles the OAuth callback and exchanges code for token
-   * @param {string} code - Authorization code from Spotify
    */
-  const handleCallback = async (code) => {
+  const handleCallback = async (code: string): Promise<void> => {
     // Prevent double-handling
     if (isLoading) {
       console.log('Already handling callback, skipping...');
@@ -121,7 +134,7 @@ export function AuthProvider({ children }) {
       window.history.replaceState({}, document.title, '/');
     } catch (error) {
       console.error('Authentication callback failed:', error);
-      alert(`Authentication failed: ${error.message}`);
+      alert(`Authentication failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
       // Don't call logout() here - it clears the code verifier
       // Just reset state and let user try again
       setAccessToken(null);
@@ -137,7 +150,7 @@ export function AuthProvider({ children }) {
   /**
    * Logs out the user and clears all stored data
    */
-  const logout = () => {
+  const logout = (): void => {
     setAccessToken(null);
     setExpiresAt(null);
     setIsAuthenticated(false);
@@ -149,13 +162,12 @@ export function AuthProvider({ children }) {
 
   /**
    * Checks if the current token is still valid
-   * @returns {boolean} True if token exists and hasn't expired
    */
-  const isTokenValid = () => {
-    return accessToken && expiresAt && Date.now() < expiresAt;
+  const isTokenValid = (): boolean => {
+    return !!(accessToken && expiresAt && Date.now() < expiresAt);
   };
 
-  const value = {
+  const value: AuthContextValue = {
     accessToken,
     isAuthenticated,
     isLoading,
@@ -170,12 +182,12 @@ export function AuthProvider({ children }) {
 
 /**
  * Hook to use the auth context
- * @returns {Object} Auth context value
  */
-export function useAuth() {
+export function useAuth(): AuthContextValue {
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 }
+

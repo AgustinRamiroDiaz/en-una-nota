@@ -7,7 +7,7 @@ import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useI18n } from '../i18n/I18nContext';
 
-function Login() {
+function Login(): React.ReactElement {
   const { login } = useAuth();
   const { t } = useI18n();
 
@@ -25,3 +25,4 @@ function Login() {
 }
 
 export default Login;
+

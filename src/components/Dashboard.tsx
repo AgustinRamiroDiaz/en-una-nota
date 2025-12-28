@@ -7,14 +7,15 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useSpotifyPlayer } from '../hooks/useSpotifyPlayer';
 import { useI18n } from '../i18n/I18nContext';
+import type { SpotifyUserProfile, PlaylistSearchResult } from '../types/spotify.d';
 
-function Dashboard() {
+function Dashboard(): React.ReactElement {
   const { accessToken, logout } = useAuth();
   const { t, locale, setLocale } = useI18n();
   const envDefaultDuration = parseInt(process.env.REACT_APP_DEFAULT_PREVIEW_DURATION || '1000', 10);
   
   // Load default preview duration from localStorage or use env variable
-  const getInitialDefaultDuration = () => {
+  const getInitialDefaultDuration = (): number => {
     const saved = localStorage.getItem('defaultPreviewDuration');
     return saved ? parseInt(saved, 10) : envDefaultDuration;
   };
@@ -26,15 +27,15 @@ function Dashboard() {
   const [isAlbumRevealed, setIsAlbumRevealed] = useState(false);
   const [songNumber, setSongNumber] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchResults, setSearchResults] = useState<PlaylistSearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
-  const [userProfile, setUserProfile] = useState(null);
+  const [userProfile, setUserProfile] = useState<SpotifyUserProfile | null>(null);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const [showDefaultDuration, setShowDefaultDuration] = useState(false);
-  const profileMenuRef = useRef(null);
-  const searchModalRef = useRef(null);
-  const searchInputRef = useRef(null);
+  const profileMenuRef = useRef<HTMLDivElement>(null);
+  const searchModalRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   // Initialize Spotify Player
   const {
@@ -73,8 +74,8 @@ function Dashboard() {
 
   // Close profile menu when clicking outside
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target as Node)) {
         setIsProfileMenuOpen(false);
       }
     };
@@ -91,7 +92,7 @@ function Dashboard() {
 
   // Close search modal on Escape key
   useEffect(() => {
-    const handleEscape = (event) => {
+    const handleEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         setIsSearchModalOpen(false);
       }
@@ -121,7 +122,7 @@ function Dashboard() {
   const isFullyRevealed = isArtistRevealed && isTitleRevealed && isAlbumRevealed;
 
   // Format milliseconds to mm:ss
-  const formatTime = (ms) => {
+  const formatTime = (ms: number): string => {
     const totalSeconds = Math.floor(ms / 1000);
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
@@ -129,7 +130,7 @@ function Dashboard() {
   };
 
   // Reveal all and play
-  const handleRevealAll = () => {
+  const handleRevealAll = (): void => {
     setIsArtistRevealed(true);
     setIsTitleRevealed(true);
     setIsAlbumRevealed(true);
@@ -138,7 +139,7 @@ function Dashboard() {
     }
   };
 
-  const handleDefaultDurationChange = (value) => {
+  const handleDefaultDurationChange = (value: number): void => {
     setDefaultPreviewDuration((prevDefault) => {
       // Keep current preview in sync when user has not customized it
       if (currentPreviewDuration === prevDefault) {
@@ -169,7 +170,7 @@ function Dashboard() {
   }, [searchQuery, searchPlaylists]);
 
   // Handle playlist selection from search results
-  const handleSelectPlaylist = async (playlistUri) => {
+  const handleSelectPlaylist = async (playlistUri: string): Promise<void> => {
     await playPlaylist(playlistUri);
     setSearchResults([]);
     setSearchQuery('');
@@ -502,3 +503,4 @@ function Dashboard() {
 }
 
 export default Dashboard;
+

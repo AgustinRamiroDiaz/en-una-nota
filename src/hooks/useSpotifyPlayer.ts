@@ -5,17 +5,39 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { getRandomAnimalName } from '../utils/animalNames';
+import type { SpotifyPlayer, SpotifyTrackInfo, PlaylistSearchResult } from '../types/spotify.d';
 
-export function useSpotifyPlayer(accessToken, autoPauseDuration = 200) {
-  const [player, setPlayer] = useState(null);
-  const [deviceId, setDeviceId] = useState(null);
+interface UseSpotifyPlayerReturn {
+  player: SpotifyPlayer | null;
+  deviceId: string | null;
+  isReady: boolean;
+  isPaused: boolean;
+  currentTrack: SpotifyTrackInfo | null;
+  position: number;
+  duration: number;
+  playerName: string;
+  playTrack: (trackUri: string) => Promise<void>;
+  togglePlay: () => void;
+  nextTrack: () => void;
+  previousTrack: () => void;
+  seek: (positionMs: number) => void;
+  setVolume: (volume: number) => void;
+  playNextAndPause: () => void;
+  replayAndPause: () => void;
+  searchPlaylists: (query: string) => Promise<PlaylistSearchResult[]>;
+  playPlaylist: (playlistUri: string, shuffle?: boolean) => Promise<void>;
+}
+
+export function useSpotifyPlayer(accessToken: string | null, autoPauseDuration: number = 200): UseSpotifyPlayerReturn {
+  const [player, setPlayer] = useState<SpotifyPlayer | null>(null);
+  const [deviceId, setDeviceId] = useState<string | null>(null);
   const [isReady, setIsReady] = useState(false);
   const [isPaused, setIsPaused] = useState(true);
-  const [currentTrack, setCurrentTrack] = useState(null);
+  const [currentTrack, setCurrentTrack] = useState<SpotifyTrackInfo | null>(null);
   const [position, setPosition] = useState(0);
   const [duration, setDuration] = useState(0);
   const [playerName, setPlayerName] = useState('');
-  const autoPauseTimeoutRef = useRef(null);
+  const autoPauseTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const shouldAutoPauseRef = useRef(false);
   const autoPauseDurationRef = useRef(autoPauseDuration);
 
@@ -28,7 +50,7 @@ export function useSpotifyPlayer(accessToken, autoPauseDuration = 200) {
   useEffect(() => {
     if (!accessToken) return;
 
-    let spotifyPlayer = null;
+    let spotifyPlayer: SpotifyPlayer | null = null;
 
     const initializePlayer = () => {
       const animalName = getRandomAnimalName();
@@ -86,15 +108,16 @@ export function useSpotifyPlayer(accessToken, autoPauseDuration = 200) {
         setDuration(state.duration);
 
         // Auto-pause logic: if track is playing and we should auto-pause
-        if (!state.paused && shouldAutoPauseRef.current) {
+        if (!state.paused && shouldAutoPauseRef.current && spotifyPlayer) {
           // Clear any existing timeout
           if (autoPauseTimeoutRef.current) {
             clearTimeout(autoPauseTimeoutRef.current);
           }
 
           // Pause after configured duration
+          const playerRef = spotifyPlayer;
           autoPauseTimeoutRef.current = setTimeout(() => {
-            spotifyPlayer.pause();
+            playerRef.pause();
             shouldAutoPauseRef.current = false;
           }, autoPauseDurationRef.current);
         }
@@ -157,7 +180,7 @@ export function useSpotifyPlayer(accessToken, autoPauseDuration = 200) {
   }, [accessToken]);
 
   // Play a track on this device
-  const playTrack = useCallback(async (trackUri) => {
+  const playTrack = useCallback(async (trackUri: string): Promise<void> => {
     if (!deviceId || !accessToken) {
       console.error('Device not ready or no access token');
       return;
@@ -180,44 +203,44 @@ export function useSpotifyPlayer(accessToken, autoPauseDuration = 200) {
   }, [deviceId, accessToken]);
 
   // Toggle play/pause
-  const togglePlay = useCallback(() => {
+  const togglePlay = useCallback((): void => {
     if (!player) return;
     player.togglePlay();
   }, [player]);
 
   // Next track
-  const nextTrack = useCallback(() => {
+  const nextTrack = useCallback((): void => {
     if (!player) return;
     player.nextTrack();
   }, [player]);
 
   // Previous track
-  const previousTrack = useCallback(() => {
+  const previousTrack = useCallback((): void => {
     if (!player) return;
     player.previousTrack();
   }, [player]);
 
   // Seek to position
-  const seek = useCallback((positionMs) => {
+  const seek = useCallback((positionMs: number): void => {
     if (!player) return;
     player.seek(positionMs);
   }, [player]);
 
   // Set volume (0-1)
-  const setVolume = useCallback((volume) => {
+  const setVolume = useCallback((volume: number): void => {
     if (!player) return;
     player.setVolume(volume);
   }, [player]);
 
   // Play next track and auto-pause after configured duration
-  const playNextAndPause = useCallback(() => {
+  const playNextAndPause = useCallback((): void => {
     if (!player) return;
     shouldAutoPauseRef.current = true;
     player.nextTrack();
   }, [player]);
 
   // Replay current track from beginning and auto-pause after configured duration
-  const replayAndPause = useCallback(() => {
+  const replayAndPause = useCallback((): void => {
     if (!player) return;
     shouldAutoPauseRef.current = true;
     player.seek(0).then(() => {
@@ -226,7 +249,7 @@ export function useSpotifyPlayer(accessToken, autoPauseDuration = 200) {
   }, [player]);
 
   // Search for playlists
-  const searchPlaylists = useCallback(async (query) => {
+  const searchPlaylists = useCallback(async (query: string): Promise<PlaylistSearchResult[]> => {
     if (!accessToken || !query.trim()) {
       return [];
     }
@@ -246,8 +269,15 @@ export function useSpotifyPlayer(accessToken, autoPauseDuration = 200) {
 
       const data = await response.json();
       return data.playlists.items
-        .filter((playlist) => playlist !== null)
-        .map((playlist) => ({
+        .filter((playlist: unknown) => playlist !== null)
+        .map((playlist: {
+          uri: string;
+          id: string;
+          name: string;
+          owner?: { display_name?: string };
+          images?: { url: string }[];
+          tracks?: { total: number };
+        }) => ({
           uri: playlist.uri,
           id: playlist.id,
           name: playlist.name,
@@ -262,7 +292,7 @@ export function useSpotifyPlayer(accessToken, autoPauseDuration = 200) {
   }, [accessToken]);
 
   // Play a playlist and start auto-pause on first track
-  const playPlaylist = useCallback(async (playlistUri, shuffle = true) => {
+  const playPlaylist = useCallback(async (playlistUri: string, shuffle: boolean = true): Promise<void> => {
     if (!deviceId || !accessToken) {
       console.error('Device not ready or no access token');
       return;
@@ -334,3 +364,4 @@ export function useSpotifyPlayer(accessToken, autoPauseDuration = 200) {
     playPlaylist,
   };
 }
+
