@@ -454,7 +454,26 @@
 
 .search-input-wrapper {
   display: flex;
+  align-items: center;
   gap: 12px;
+}
+
+.search-loading {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 1.2rem;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0.3; }
+}
+
+.search-hint {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.85rem;
+  padding: 12px;
 }
 
 .search-input {

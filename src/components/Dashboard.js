@@ -134,14 +134,25 @@ function Dashboard() {
     });
   };
 
-  // Handle search
-  const handleSearch = async () => {
-    if (!searchQuery.trim()) return;
+  // Debounced auto-search when typing
+  useEffect(() => {
+    // Clear results if query is too short
+    if (searchQuery.trim().length < 3) {
+      setSearchResults([]);
+      return;
+    }
+
     setIsSearching(true);
-    const results = await searchPlaylists(searchQuery);
-    setSearchResults(results);
-    setIsSearching(false);
-  };
+    const debounceTimer = setTimeout(async () => {
+      const results = await searchPlaylists(searchQuery);
+      setSearchResults(results);
+      setIsSearching(false);
+    }, 400);
+
+    return () => {
+      clearTimeout(debounceTimer);
+    };
+  }, [searchQuery, searchPlaylists]);
 
   // Handle playlist selection from search results
   const handleSelectPlaylist = async (playlistUri) => {
@@ -174,18 +185,15 @@ function Dashboard() {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                   placeholder="Buscar playlist..."
                   className="search-input"
                 />
-                <button
-                  onClick={handleSearch}
-                  disabled={isSearching}
-                  className="search-button"
-                >
-                  {isSearching ? '...' : 'Buscar'}
-                </button>
+                {isSearching && <span className="search-loading">...</span>}
               </div>
+
+              {searchQuery.trim().length > 0 && searchQuery.trim().length < 3 && (
+                <div className="search-hint">Escribe al menos 3 caracteres</div>
+              )}
 
               {searchResults.length > 0 && (
                 <div className="search-results">
