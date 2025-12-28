@@ -69,10 +69,7 @@
 }
 
 .dashboard-content {
-  background-color: rgba(255, 255, 255, 0.05);
-  padding: 50px 40px;
-  border-radius: 16px;
-  backdrop-filter: blur(10px);
+  padding: 20px;
 }
 
 .dashboard-content h1 {
@@ -1279,7 +1276,7 @@
   }
 
   .dashboard-content {
-    padding: 40px 30px;
+    padding: 16px;
   }
 
   .dashboard-content h1 {
