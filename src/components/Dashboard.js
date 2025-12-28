@@ -219,15 +219,6 @@ function Dashboard() {
               </div>
             </div>
 
-            <div className="game-buttons">
-              <button
-                className="pause-button"
-                onClick={togglePlay}
-                disabled={!currentTrack}
-              >
-                {isPaused ? '▶ Play' : '⏸ Pausa'}
-              </button>
-            </div>
           </div>
         )}
 
