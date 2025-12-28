@@ -32,8 +32,11 @@ function Dashboard() {
     isReady,
     isPaused,
     currentTrack,
+    position,
+    duration,
     playerName,
     togglePlay,
+    seek,
     playNextAndPause,
     replayAndPause,
     searchPlaylists,
@@ -102,6 +105,14 @@ function Dashboard() {
 
   // Helper to check if everything is revealed
   const isFullyRevealed = isArtistRevealed && isTitleRevealed && isAlbumRevealed;
+
+  // Format milliseconds to mm:ss
+  const formatTime = (ms) => {
+    const totalSeconds = Math.floor(ms / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  };
 
   // Reveal all and play
   const handleRevealAll = () => {
@@ -388,6 +399,20 @@ function Dashboard() {
                     </div>
                   </div>
                 </div>
+              </div>
+
+              {/* Seek Slider */}
+              <div className="seek-container">
+                <span className="seek-time">{formatTime(position)}</span>
+                <input
+                  type="range"
+                  min="0"
+                  max={duration || 100}
+                  value={position}
+                  onChange={(e) => seek(Number(e.target.value))}
+                  className="seek-slider"
+                />
+                <span className="seek-time">{formatTime(duration)}</span>
               </div>
 
               <div className="control-buttons">
