@@ -3,7 +3,7 @@
  * Music guessing game with Spotify playback controls
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useSpotifyPlayer } from '../hooks/useSpotifyPlayer';
 
@@ -19,6 +19,9 @@ function Dashboard() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [userProfile, setUserProfile] = useState(null);
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const profileMenuRef = useRef(null);
 
   // Initialize Spotify Player
   const {
@@ -33,6 +36,36 @@ function Dashboard() {
     searchPlaylists,
     playPlaylist,
   } = useSpotifyPlayer(accessToken, currentPreviewDuration);
+
+  // Fetch user profile on mount
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      if (!accessToken) return;
+      try {
+        const response = await fetch('https://api.spotify.com/v1/me', {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setUserProfile(data);
+        }
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+      }
+    };
+    fetchUserProfile();
+  }, [accessToken]);
+
+  // Close profile menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
+        setIsProfileMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // Reset revealed state and increment song number when track changes
   useEffect(() => {
@@ -87,6 +120,40 @@ function Dashboard() {
 
   return (
     <div className="dashboard-container">
+      {/* Profile Menu - Top Right */}
+      <div className="profile-menu-container" ref={profileMenuRef}>
+        <button
+          className="profile-button"
+          onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+          aria-label="User menu"
+        >
+          {userProfile?.images?.[0]?.url ? (
+            <img
+              src={userProfile.images[0].url}
+              alt={userProfile.display_name || 'User'}
+              className="profile-avatar"
+            />
+          ) : (
+            <div className="profile-avatar-placeholder">
+              {userProfile?.display_name?.[0]?.toUpperCase() || '?'}
+            </div>
+          )}
+        </button>
+        {isProfileMenuOpen && (
+          <div className="profile-dropdown">
+            {userProfile && (
+              <div className="profile-info">
+                <span className="profile-name">{userProfile.display_name}</span>
+                <span className="profile-email">{userProfile.email}</span>
+              </div>
+            )}
+            <button className="profile-logout-button" onClick={logout}>
+              Logout
+            </button>
+          </div>
+        )}
+      </div>
+
       <div className="dashboard-content">
         <h1>{playerName || 'En Una Nota'}</h1>
 
@@ -286,10 +353,6 @@ function Dashboard() {
             )}
           </div>
         )}
-
-        <button className="logout-button" onClick={logout}>
-          Logout
-        </button>
       </div>
     </div>
   );
