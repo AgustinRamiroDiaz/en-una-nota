@@ -293,6 +293,37 @@
   border-color: rgba(255, 255, 255, 0.4);
 }
 
+/* Language Switcher */
+.language-switcher {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.lang-btn {
+  flex: 1;
+  padding: 8px 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.lang-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.lang-btn.active {
+  background: #1DB954;
+  border-color: #1DB954;
+  color: white;
+}
+
 /* Search Modal */
 .search-modal-overlay {
   position: fixed;

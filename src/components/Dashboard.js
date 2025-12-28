@@ -6,9 +6,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useSpotifyPlayer } from '../hooks/useSpotifyPlayer';
+import { useI18n } from '../i18n/I18nContext';
 
 function Dashboard() {
   const { accessToken, logout } = useAuth();
+  const { t, locale, setLocale } = useI18n();
   const envDefaultDuration = parseInt(process.env.REACT_APP_DEFAULT_PREVIEW_DURATION || '1000', 10);
   
   // Load default preview duration from localStorage or use env variable
@@ -181,7 +183,7 @@ function Dashboard() {
         <div className="search-modal-overlay" onClick={() => setIsSearchModalOpen(false)}>
           <div className="search-modal" ref={searchModalRef} onClick={(e) => e.stopPropagation()}>
             <div className="search-modal-header">
-              <h2>Buscar Playlist</h2>
+              <h2>{t('searchPlaylist')}</h2>
               <button
                 className="search-modal-close"
                 onClick={() => setIsSearchModalOpen(false)}
@@ -197,14 +199,14 @@ function Dashboard() {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Buscar playlist..."
+                  placeholder={t('searchPlaceholder')}
                   className="search-input"
                 />
                 {isSearching && <span className="search-loading">...</span>}
               </div>
 
               {searchQuery.trim().length > 0 && searchQuery.trim().length < 3 && (
-                <div className="search-hint">Escribe al menos 3 caracteres</div>
+                <div className="search-hint">{t('searchHint')}</div>
               )}
 
               {searchResults.length > 0 && (
@@ -220,7 +222,7 @@ function Dashboard() {
                       )}
                       <div className="search-result-info">
                         <span className="search-result-name">{playlist.name}</span>
-                        <span className="search-result-artist">{playlist.owner} · {playlist.trackCount} canciones</span>
+                        <span className="search-result-artist">{playlist.owner} · {playlist.trackCount} {t('songs')}</span>
                       </div>
                     </button>
                   ))}
@@ -276,8 +278,22 @@ function Dashboard() {
                       <span className="profile-email">{userProfile.email}</span>
                     </div>
                   )}
+                  <div className="language-switcher">
+                    <button 
+                      className={`lang-btn ${locale === 'es' ? 'active' : ''}`}
+                      onClick={() => setLocale('es')}
+                    >
+                      ES
+                    </button>
+                    <button 
+                      className={`lang-btn ${locale === 'en' ? 'active' : ''}`}
+                      onClick={() => setLocale('en')}
+                    >
+                      EN
+                    </button>
+                  </div>
                   <button className="profile-logout-button" onClick={logout}>
-                    Logout
+                    {t('logout')}
                   </button>
                 </div>
               )}
@@ -287,7 +303,7 @@ function Dashboard() {
 
         {!isReady && (
           <div className="player-status">
-            Initializing Spotify Player...
+            {t('initializing')}
           </div>
         )}
 
@@ -297,7 +313,7 @@ function Dashboard() {
             <div className="duration-controls">
               <div className="duration-row">
                 <label htmlFor="current-duration-slider" className="duration-label">
-                  Preview: <span className="duration-value">{(currentPreviewDuration / 1000).toFixed(1)}s</span>
+                  {t('preview')}: <span className="duration-value">{(currentPreviewDuration / 1000).toFixed(1)}s</span>
                 </label>
                 <input
                   id="current-duration-slider"
@@ -321,7 +337,7 @@ function Dashboard() {
               {showDefaultDuration && (
                 <div className="duration-row secondary">
                   <label htmlFor="default-duration-slider" className="duration-label">
-                    Default: <span className="duration-value">{(defaultPreviewDuration / 1000).toFixed(1)}s</span>
+                    {t('default')}: <span className="duration-value">{(defaultPreviewDuration / 1000).toFixed(1)}s</span>
                   </label>
                   <input
                     id="default-duration-slider"
@@ -385,7 +401,7 @@ function Dashboard() {
                         <span className="track-name">{currentTrack.name}</span>
                       ) : (
                         <span className="track-hidden">
-                        Canción ??? 
+                        {t('trackHidden')} 
                         <span className="revelar-hint">
                           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
@@ -407,7 +423,7 @@ function Dashboard() {
                         </span>
                       ) : (
                         <span className="track-hidden">
-                        Artista ??? 
+                        {t('artistHidden')} 
                         <span className="revelar-hint">
                           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
@@ -450,7 +466,7 @@ function Dashboard() {
                   {isPaused ? '▶' : '⏸'}
                 </button>
                 <button onClick={playNextAndPause} className="control-btn next-btn">
-                  Siguiente ⏭
+                  {t('next')} ⏭
                 </button>
               </div>
             </div>
@@ -459,7 +475,7 @@ function Dashboard() {
           {/* Reintentar Section */}
           {isReady && (
             <div className="reintentar-section">
-              <span className="reintentar-label">Reintentar</span>
+              <span className="reintentar-label">{t('retry')}</span>
               <div className="reintentar-buttons">
                 {[0, 20, 50, 100].map((percent) => (
                   <button

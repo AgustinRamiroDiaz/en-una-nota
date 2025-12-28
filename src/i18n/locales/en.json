@@ -1,0 +1,22 @@
+{
+  "appName": "En Una Nota",
+  "initializing": "Initializing Spotify Player...",
+  "searchPlaylist": "Search Playlist",
+  "searchPlaceholder": "Search playlist...",
+  "searchHint": "Type at least 3 characters",
+  "songs": "songs",
+  "preview": "Preview",
+  "default": "Default",
+  "retry": "Retry",
+  "song": "Song",
+  "artist": "Artist",
+  "reveal": "reveal",
+  "revealAll": "Reveal All",
+  "next": "Next",
+  "logout": "Logout",
+  "login": "Login with Spotify",
+  "welcome": "Guess the song",
+  "trackHidden": "Song ???",
+  "artistHidden": "Artist ???"
+}
+

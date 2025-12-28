@@ -1,0 +1,22 @@
+{
+  "appName": "En Una Nota",
+  "initializing": "Inicializando Spotify Player...",
+  "searchPlaylist": "Buscar Playlist",
+  "searchPlaceholder": "Buscar playlist...",
+  "searchHint": "Escribe al menos 3 caracteres",
+  "songs": "canciones",
+  "preview": "Vista previa",
+  "default": "Por defecto",
+  "retry": "Reintentar",
+  "song": "Canción",
+  "artist": "Artista",
+  "reveal": "revelar",
+  "revealAll": "Revelar Todo",
+  "next": "Siguiente",
+  "logout": "Cerrar sesión",
+  "login": "Iniciar sesión con Spotify",
+  "welcome": "Adivina la canción",
+  "trackHidden": "Canción ???",
+  "artistHidden": "Artista ???"
+}
+
