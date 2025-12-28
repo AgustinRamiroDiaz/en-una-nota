@@ -299,6 +299,7 @@ function Dashboard() {
                   ) : (
                     <div className="album-art-hidden">
                       <span>?</span>
+                      <span className="revelar-hint">revelar</span>
                     </div>
                   )}
                 </div>
@@ -314,7 +315,7 @@ function Dashboard() {
                     {isTitleRevealed ? (
                       <span className="track-name">{currentTrack.name}</span>
                     ) : (
-                      <span className="track-hidden">Canción ???</span>
+                      <span className="track-hidden">Canción ??? <span className="revelar-hint">(revelar)</span></span>
                     )}
                   </div>
                   <div 
@@ -328,7 +329,7 @@ function Dashboard() {
                         {currentTrack.artists.map(artist => artist.name).join(', ')}
                       </span>
                     ) : (
-                      <span className="track-hidden">Artista ???</span>
+                      <span className="track-hidden">Artista ??? <span className="revelar-hint">(revelar)</span></span>
                     )}
                   </div>
                 </div>

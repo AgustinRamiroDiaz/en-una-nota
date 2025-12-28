@@ -986,6 +986,19 @@
   transition: color 0.2s ease;
 }
 
+.revelar-hint {
+  font-size: 0.75rem;
+  font-weight: 400;
+  opacity: 0.6;
+  font-style: normal;
+}
+
+.album-art-hidden .revelar-hint {
+  display: block;
+  font-size: 0.7rem;
+  margin-top: 4px;
+}
+
 .track-details .track-name {
   font-size: 1.2rem;
   font-weight: 700;
