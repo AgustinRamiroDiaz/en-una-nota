@@ -21,7 +21,10 @@ function Dashboard() {
   const [isSearching, setIsSearching] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const profileMenuRef = useRef(null);
+  const searchModalRef = useRef(null);
+  const searchInputRef = useRef(null);
 
   // Initialize Spotify Player
   const {
@@ -65,6 +68,24 @@ function Dashboard() {
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Focus search input when modal opens
+  useEffect(() => {
+    if (isSearchModalOpen && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [isSearchModalOpen]);
+
+  // Close search modal on Escape key
+  useEffect(() => {
+    const handleEscape = (event) => {
+      if (event.key === 'Escape') {
+        setIsSearchModalOpen(false);
+      }
+    };
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
   }, []);
 
   // Reset revealed state and increment song number when track changes
@@ -116,43 +137,116 @@ function Dashboard() {
     await playPlaylist(playlistUri);
     setSearchResults([]);
     setSearchQuery('');
+    setIsSearchModalOpen(false);
   };
 
   return (
     <div className="dashboard-container">
-      {/* Profile Menu - Top Right */}
-      <div className="profile-menu-container" ref={profileMenuRef}>
-        <button
-          className="profile-button"
-          onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
-          aria-label="User menu"
-        >
-          {userProfile?.images?.[0]?.url ? (
-            <img
-              src={userProfile.images[0].url}
-              alt={userProfile.display_name || 'User'}
-              className="profile-avatar"
-            />
-          ) : (
-            <div className="profile-avatar-placeholder">
-              {userProfile?.display_name?.[0]?.toUpperCase() || '?'}
-            </div>
-          )}
-        </button>
-        {isProfileMenuOpen && (
-          <div className="profile-dropdown">
-            {userProfile && (
-              <div className="profile-info">
-                <span className="profile-name">{userProfile.display_name}</span>
-                <span className="profile-email">{userProfile.email}</span>
+      {/* Top Right Actions */}
+      <div className="top-right-actions">
+        {/* Search Button */}
+        {isReady && (
+          <button
+            className="search-icon-button"
+            onClick={() => setIsSearchModalOpen(true)}
+            aria-label="Search playlists"
+          >
+            🔍
+          </button>
+        )}
+
+        {/* Profile Menu */}
+        <div className="profile-menu-container" ref={profileMenuRef}>
+          <button
+            className="profile-button"
+            onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+            aria-label="User menu"
+          >
+            {userProfile?.images?.[0]?.url ? (
+              <img
+                src={userProfile.images[0].url}
+                alt={userProfile.display_name || 'User'}
+                className="profile-avatar"
+              />
+            ) : (
+              <div className="profile-avatar-placeholder">
+                {userProfile?.display_name?.[0]?.toUpperCase() || '?'}
               </div>
             )}
-            <button className="profile-logout-button" onClick={logout}>
-              Logout
-            </button>
-          </div>
-        )}
+          </button>
+          {isProfileMenuOpen && (
+            <div className="profile-dropdown">
+              {userProfile && (
+                <div className="profile-info">
+                  <span className="profile-name">{userProfile.display_name}</span>
+                  <span className="profile-email">{userProfile.email}</span>
+                </div>
+              )}
+              <button className="profile-logout-button" onClick={logout}>
+                Logout
+              </button>
+            </div>
+          )}
+        </div>
       </div>
+
+      {/* Search Modal */}
+      {isSearchModalOpen && (
+        <div className="search-modal-overlay" onClick={() => setIsSearchModalOpen(false)}>
+          <div className="search-modal" ref={searchModalRef} onClick={(e) => e.stopPropagation()}>
+            <div className="search-modal-header">
+              <h2>Buscar Playlist</h2>
+              <button
+                className="search-modal-close"
+                onClick={() => setIsSearchModalOpen(false)}
+                aria-label="Close"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="search-modal-content">
+              <div className="search-input-wrapper">
+                <input
+                  ref={searchInputRef}
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                  placeholder="Buscar playlist..."
+                  className="search-input"
+                />
+                <button
+                  onClick={handleSearch}
+                  disabled={isSearching}
+                  className="search-button"
+                >
+                  {isSearching ? '...' : 'Buscar'}
+                </button>
+              </div>
+
+              {searchResults.length > 0 && (
+                <div className="search-results">
+                  {searchResults.map((playlist) => (
+                    <button
+                      key={playlist.id}
+                      onClick={() => handleSelectPlaylist(playlist.uri)}
+                      className="search-result-item"
+                    >
+                      {playlist.image && (
+                        <img src={playlist.image} alt="" className="search-result-image" />
+                      )}
+                      <div className="search-result-info">
+                        <span className="search-result-name">{playlist.name}</span>
+                        <span className="search-result-artist">{playlist.owner} · {playlist.trackCount} canciones</span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="dashboard-content">
         <h1>{playerName || 'En Una Nota'}</h1>
@@ -160,49 +254,6 @@ function Dashboard() {
         {!isReady && (
           <div className="player-status">
             Initializing Spotify Player...
-          </div>
-        )}
-
-        {/* Search */}
-        {isReady && (
-          <div className="search-container">
-            <div className="search-input-wrapper">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                placeholder="Buscar playlist..."
-                className="search-input"
-              />
-              <button
-                onClick={handleSearch}
-                disabled={isSearching}
-                className="search-button"
-              >
-                {isSearching ? '...' : 'Buscar'}
-              </button>
-            </div>
-
-            {searchResults.length > 0 && (
-              <div className="search-results">
-                {searchResults.map((playlist) => (
-                  <button
-                    key={playlist.id}
-                    onClick={() => handleSelectPlaylist(playlist.uri)}
-                    className="search-result-item"
-                  >
-                    {playlist.image && (
-                      <img src={playlist.image} alt="" className="search-result-image" />
-                    )}
-                    <div className="search-result-info">
-                      <span className="search-result-name">{playlist.name}</span>
-                      <span className="search-result-artist">{playlist.owner} · {playlist.trackCount} canciones</span>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
         )}
 
