@@ -27,7 +27,6 @@ function Dashboard() {
     currentTrack,
     playerName,
     togglePlay,
-    nextTrack,
     previousTrack,
     playNextAndPause,
     replayAndPause,
@@ -228,12 +227,6 @@ function Dashboard() {
               >
                 {isPaused ? '▶ Play' : '⏸ Pausa'}
               </button>
-              <button
-                className="siguiente-button"
-                onClick={playNextAndPause}
-              >
-                Siguiente
-              </button>
             </div>
           </div>
         )}
@@ -300,7 +293,7 @@ function Dashboard() {
               <button onClick={togglePlay} className="control-btn play-pause">
                 {isPaused ? '▶' : '⏸'}
               </button>
-              <button onClick={nextTrack} className="control-btn">⏭</button>
+              <button onClick={playNextAndPause} className="control-btn">⏭</button>
             </div>
 
             {/* Revelar button - only shown when not everything is revealed */}
