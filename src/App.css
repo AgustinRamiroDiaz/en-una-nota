@@ -1005,11 +1005,25 @@
 
 /* Player Controls */
 .player-controls {
+  position: relative;
   background-color: rgba(255, 255, 255, 0.08);
   border-radius: 12px;
   padding: 20px;
   margin-bottom: 30px;
   border: 1px solid rgba(29, 185, 84, 0.3);
+}
+
+.song-counter-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(29, 185, 84, 0.2);
+  border: 1px solid rgba(29, 185, 84, 0.4);
+  color: #1DB954;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
 }
 
 .now-playing {

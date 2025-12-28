@@ -257,16 +257,6 @@ function Dashboard() {
           </div>
         )}
 
-        {/* Song Counter */}
-        {currentTrack && (
-          <div className="playback-status">
-            <div className="song-counter">
-              <span className="counter-label">Song</span>
-              <span className="counter-number">#{songNumber}</span>
-            </div>
-          </div>
-        )}
-
         {/* Game Controls */}
         {isReady && (
           <div className="game-controls">
@@ -332,6 +322,7 @@ function Dashboard() {
         {/* Spotify Player - Always visible when track exists */}
         {currentTrack && (
           <div className="player-controls">
+            <div className="song-counter-badge">#{songNumber}</div>
             <div className="now-playing">
               <div className="track-info">
                 {/* Album Art - Hidden or Revealed */}
