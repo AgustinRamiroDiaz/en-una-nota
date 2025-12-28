@@ -184,14 +184,28 @@ function Dashboard() {
                 <div className="duration-helper">New songs reset to this duration.</div>
               </div>
             </div>
+            <div className="reintentar-section">
+              <span className="reintentar-label">Reintentar</span>
+              <div className="reintentar-buttons">
+                {[0, 20, 50, 100].map((percent) => (
+                  <button
+                    key={percent}
+                    className="reintentar-button"
+                    onClick={() => {
+                      if (percent > 0) {
+                        setCurrentPreviewDuration(prev => Math.round(prev * (1 + percent / 100)));
+                      }
+                      replayAndPause();
+                    }}
+                    disabled={!currentTrack}
+                  >
+                    {percent === 0 ? '=' : `+${percent}%`}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <div className="game-buttons">
-              <button
-                className="reintentar-button"
-                onClick={replayAndPause}
-                disabled={!currentTrack}
-              >
-                Reintentar
-              </button>
               <button
                 className="pause-button"
                 onClick={togglePlay}
