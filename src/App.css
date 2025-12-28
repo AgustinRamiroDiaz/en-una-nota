@@ -1233,6 +1233,22 @@
   }
 }
 
+/* Reveal button */
+.control-btn.reveal-btn {
+  background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+  border-color: transparent;
+}
+
+.control-btn.reveal-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #fbbf24 0%, #fcd34d 100%);
+}
+
+.control-btn.reveal-btn.revealed {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+  opacity: 0.5;
+}
+
 /* Next/Siguiente button */
 .control-btn.next-btn {
   gap: 6px;

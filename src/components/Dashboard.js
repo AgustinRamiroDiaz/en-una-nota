@@ -34,7 +34,6 @@ function Dashboard() {
     currentTrack,
     playerName,
     togglePlay,
-    previousTrack,
     playNextAndPause,
     replayAndPause,
     searchPlaylists,
@@ -387,7 +386,16 @@ function Dashboard() {
             </div>
 
             <div className="control-buttons">
-              <button onClick={previousTrack} className="control-btn">⏮</button>
+              <button 
+                onClick={handleRevealAll} 
+                className={`control-btn reveal-btn ${isFullyRevealed ? 'revealed' : ''}`}
+                disabled={isFullyRevealed}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              </button>
               <button onClick={togglePlay} className={`control-btn play-pause ${!isPaused ? 'playing' : 'paused'}`}>
                 {isPaused ? '▶' : '⏸'}
               </button>
@@ -395,13 +403,6 @@ function Dashboard() {
                 Siguiente ⏭
               </button>
             </div>
-
-            {/* Revelar button - only shown when not everything is revealed */}
-            {!isFullyRevealed && (
-              <button className="revelar-button" onClick={handleRevealAll}>
-                Revelar Todo
-              </button>
-            )}
           </div>
         )}
       </div>
