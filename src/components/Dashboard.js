@@ -139,16 +139,12 @@ function Dashboard() {
           </div>
         )}
 
-        {/* Playing Status Indicator */}
+        {/* Song Counter */}
         {currentTrack && (
           <div className="playback-status">
             <div className="song-counter">
               <span className="counter-label">Song</span>
               <span className="counter-number">#{songNumber}</span>
-            </div>
-            <div className={`status-indicator ${!isPaused ? 'playing' : 'paused'}`}>
-              <span className="status-dot"></span>
-              <span className="status-text">{!isPaused ? 'Playing' : 'Paused'}</span>
             </div>
           </div>
         )}
@@ -172,13 +168,6 @@ function Dashboard() {
                   className="duration-slider"
                 />
                 <div className="duration-helper">Applies only to the song that is playing now.</div>
-                <button
-                  className="reset-button"
-                  onClick={() => setCurrentPreviewDuration(defaultPreviewDuration)}
-                  disabled={currentPreviewDuration === defaultPreviewDuration}
-                >
-                  Reset to default
-                </button>
               </div>
 
               <div className="duration-control secondary">
@@ -281,10 +270,12 @@ function Dashboard() {
 
             <div className="control-buttons">
               <button onClick={previousTrack} className="control-btn">⏮</button>
-              <button onClick={togglePlay} className="control-btn play-pause">
+              <button onClick={togglePlay} className={`control-btn play-pause ${!isPaused ? 'playing' : 'paused'}`}>
                 {isPaused ? '▶' : '⏸'}
               </button>
-              <button onClick={playNextAndPause} className="control-btn">⏭</button>
+              <button onClick={playNextAndPause} className="control-btn next-btn">
+                Siguiente ⏭
+              </button>
             </div>
 
             {/* Revelar button - only shown when not everything is revealed */}
