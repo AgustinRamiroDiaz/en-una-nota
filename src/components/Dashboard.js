@@ -10,7 +10,8 @@ import { useSpotifyPlayer } from '../hooks/useSpotifyPlayer';
 function Dashboard() {
   const { accessToken, logout } = useAuth();
   const defaultDuration = parseInt(process.env.REACT_APP_DEFAULT_PREVIEW_DURATION || '1000', 10);
-  const [pauseDuration, setPauseDuration] = useState(defaultDuration);
+  const [defaultPreviewDuration, setDefaultPreviewDuration] = useState(defaultDuration);
+  const [currentPreviewDuration, setCurrentPreviewDuration] = useState(defaultDuration);
   const [isRevealed, setIsRevealed] = useState(false);
   const [isHintShown, setIsHintShown] = useState(false);
   const [songNumber, setSongNumber] = useState(0);
@@ -31,7 +32,7 @@ function Dashboard() {
     replayAndPause,
     searchPlaylists,
     playPlaylist,
-  } = useSpotifyPlayer(accessToken, pauseDuration);
+  } = useSpotifyPlayer(accessToken, currentPreviewDuration);
 
   // Reset revealed/hint state and increment song number when track changes
   useEffect(() => {
@@ -39,9 +40,20 @@ function Dashboard() {
       setIsRevealed(false);
       setIsHintShown(false);
       setSongNumber(prev => prev + 1);
+      setCurrentPreviewDuration(defaultPreviewDuration);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentTrack?.id]);
+
+  const handleDefaultDurationChange = (value) => {
+    setDefaultPreviewDuration((prevDefault) => {
+      // Keep current preview in sync when user has not customized it
+      if (currentPreviewDuration === prevDefault) {
+        setCurrentPreviewDuration(value);
+      }
+      return value;
+    });
+  };
 
   // Handle search
   const handleSearch = async () => {
@@ -130,20 +142,47 @@ function Dashboard() {
         {/* Game Controls */}
         {isReady && (
           <div className="game-controls">
-            <div className="duration-control">
-              <label htmlFor="duration-slider" className="duration-label">
-                Preview Duration: <span className="duration-value">{(pauseDuration / 1000).toFixed(1)}s</span>
-              </label>
-              <input
-                id="duration-slider"
-                type="range"
-                min="100"
-                max="5000"
-                step="100"
-                value={pauseDuration}
-                onChange={(e) => setPauseDuration(Number(e.target.value))}
-                className="duration-slider"
-              />
+            <div className="duration-controls">
+              <div className="duration-control">
+                <label htmlFor="current-duration-slider" className="duration-label">
+                  Current preview duration: <span className="duration-value">{(currentPreviewDuration / 1000).toFixed(1)}s</span>
+                </label>
+                <input
+                  id="current-duration-slider"
+                  type="range"
+                  min="100"
+                  max="5000"
+                  step="100"
+                  value={currentPreviewDuration}
+                  onChange={(e) => setCurrentPreviewDuration(Number(e.target.value))}
+                  className="duration-slider"
+                />
+                <div className="duration-helper">Applies only to the song that is playing now.</div>
+                <button
+                  className="reset-button"
+                  onClick={() => setCurrentPreviewDuration(defaultPreviewDuration)}
+                  disabled={currentPreviewDuration === defaultPreviewDuration}
+                >
+                  Reset to default
+                </button>
+              </div>
+
+              <div className="duration-control secondary">
+                <label htmlFor="default-duration-slider" className="duration-label">
+                  Default preview duration: <span className="duration-value">{(defaultPreviewDuration / 1000).toFixed(1)}s</span>
+                </label>
+                <input
+                  id="default-duration-slider"
+                  type="range"
+                  min="100"
+                  max="5000"
+                  step="100"
+                  value={defaultPreviewDuration}
+                  onChange={(e) => handleDefaultDurationChange(Number(e.target.value))}
+                  className="duration-slider"
+                />
+                <div className="duration-helper">New songs reset to this duration.</div>
+              </div>
             </div>
             <div className="game-buttons">
               <button
