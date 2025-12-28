@@ -933,25 +933,22 @@
   background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
   color: white;
   border: none;
-  padding: 12px 32px;
-  font-size: 1rem;
+  padding: 10px 24px;
+  font-size: 0.9rem;
   font-weight: 600;
-  border-radius: 50px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  box-shadow: 0 3px 10px rgba(245, 158, 11, 0.4);
+  letter-spacing: 0.5px;
 }
 
 .revelar-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.6);
+  filter: brightness(1.1);
 }
 
 .revelar-button:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 10px rgba(245, 158, 11, 0.4);
+  transform: scale(0.98);
 }
 
 /* Hint Button */
@@ -959,25 +956,23 @@
   background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
   color: white;
   border: none;
-  padding: 12px 32px;
-  font-size: 1rem;
+  padding: 10px 24px;
+  font-size: 0.9rem;
   font-weight: 600;
-  border-radius: 50px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   text-transform: uppercase;
   letter-spacing: 1px;
   box-shadow: 0 3px 10px rgba(99, 102, 241, 0.4);
 }
 
 .hint-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
+  filter: brightness(1.1);
 }
 
 .hint-button:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 10px rgba(99, 102, 241, 0.4);
+  transform: scale(0.98);
 }
 
 /* Hint Display */
@@ -1178,19 +1173,20 @@
 
 .control-buttons {
   display: flex;
-  justify-content: center;
-  gap: 16px;
-  align-items: center;
+  gap: 10px;
+  align-items: stretch;
+  width: 100%;
 }
 
 .control-btn {
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  flex: 1;
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   color: white;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  font-size: 1.2rem;
+  height: 48px;
+  padding: 0 12px;
+  border-radius: 8px;
+  font-size: 1.1rem;
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
@@ -1199,19 +1195,16 @@
 }
 
 .control-btn:hover {
-  background-color: rgba(29, 185, 84, 0.3);
-  border-color: #1DB954;
-  transform: scale(1.1);
+  background-color: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
 }
 
 .control-btn:active {
-  transform: scale(0.95);
+  transform: scale(0.97);
 }
 
 .control-btn.play-pause {
-  width: 60px;
-  height: 60px;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   background-color: #1DB954;
   border-color: #1DB954;
   transition: all 0.3s ease, box-shadow 0.3s ease;
@@ -1233,7 +1226,7 @@
     box-shadow: 0 0 0 0 rgba(29, 185, 84, 0.7);
   }
   50% {
-    box-shadow: 0 0 0 12px rgba(29, 185, 84, 0);
+    box-shadow: 0 0 0 10px rgba(29, 185, 84, 0);
   }
   100% {
     box-shadow: 0 0 0 0 rgba(29, 185, 84, 0);
@@ -1242,21 +1235,17 @@
 
 /* Next/Siguiente button */
 .control-btn.next-btn {
-  width: auto;
-  padding: 0 24px;
+  gap: 6px;
   background: linear-gradient(135deg, #9333ea 0%, #a855f7 100%);
-  border-color: #9333ea;
-  font-size: 0.95rem;
+  border-color: transparent;
+  font-size: 0.85rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  box-shadow: 0 3px 10px rgba(147, 51, 234, 0.4);
+  letter-spacing: 0.5px;
 }
 
 .control-btn.next-btn:hover {
   background: linear-gradient(135deg, #a855f7 0%, #c084fc 100%);
-  border-color: #a855f7;
-  box-shadow: 0 6px 20px rgba(147, 51, 234, 0.6);
 }
 
 /* Revelar button inside player */
@@ -1302,15 +1291,16 @@
   }
 
   .control-btn {
-    width: 45px;
-    height: 45px;
+    height: 44px;
     font-size: 1rem;
   }
 
   .control-btn.play-pause {
-    width: 55px;
-    height: 55px;
-    font-size: 1.3rem;
+    font-size: 1.2rem;
+  }
+
+  .control-btn.next-btn {
+    font-size: 0.75rem;
   }
 
   .game-buttons {
