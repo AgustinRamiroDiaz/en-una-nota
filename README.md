@@ -2,6 +2,8 @@
 
 A React web application that lets you play songs from any Spotify playlist using your Spotify Premium account.
 
+Play now at https://agustinramirodiaz.github.io/en-una-nota/!
+
 ## Features
 
 - 🎵 Load any Spotify playlist by URL
