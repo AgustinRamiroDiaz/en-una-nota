@@ -1,14 +1,15 @@
-# Spotify Playlist Player
+# En Una Nota
 
-A React web application that lets you play songs from any Spotify playlist using your Spotify Premium account.
+En Una Nota is a React music guessing game. Pick a Spotify playlist, listen to the music that plays, and try to guess the song before the answer is revealed.
 
 Play now at https://agustinramirodiaz.github.io/en-una-nota/!
 
 ## Features
 
 - 🎵 Load any Spotify playlist by URL
+- 🎮 Guess the song based on the music from the selected playlist
 - ▶️ Full-length playback (not just 30-second previews)
-- 🎮 Play/pause controls for each track
+- ▶️ Play/pause controls for each round
 - 🔐 Secure OAuth 2.0 authentication with PKCE
 - 📱 Responsive design for mobile and desktop
 - 🎨 Spotify-themed UI
@@ -63,12 +64,13 @@ The app will open at [http://localhost:3000](http://localhost:3000)
 ## How to Use
 
 1. **Login**: Click "Login with Spotify" and authorize the app
-2. **Get Playlist URL**:
+2. **Choose the Playlist**:
    - Open Spotify (web or app)
    - Navigate to any playlist
    - Click Share → Copy link to playlist
 3. **Load Playlist**: Paste the URL and click "Load Playlist"
-4. **Play Music**: Click the play button on any track to start playback
+4. **Start Playing**: Listen to the music selected from the playlist
+5. **Guess the Song**: Use what you hear to identify the correct track
 
 ## Supported URL Formats
 
