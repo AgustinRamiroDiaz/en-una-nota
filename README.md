@@ -28,9 +28,9 @@ Play now at https://agustinramirodiaz.github.io/en-una-nota/!
 2. Log in with your Spotify account
 3. Click "Create an App"
 4. Fill in the app name and description
-5. Add the following Redirect URI in app settings:
+5. Add the following Redirect URI in app settings (Spotify rejects `localhost`):
    ```
-   http://localhost:3000/callback
+   http://127.0.0.1:3000
    ```
 6. Copy your **Client ID**
 
@@ -44,7 +44,8 @@ Play now at https://agustinramirodiaz.github.io/en-una-nota/!
 2. Add your Spotify Client ID to `.env`:
    ```
    REACT_APP_SPOTIFY_CLIENT_ID=your_client_id_here
-   REACT_APP_REDIRECT_URI=http://localhost:3000/callback
+   REACT_APP_REDIRECT_URI=http://127.0.0.1:3000
+   HOST=127.0.0.1
    ```
 
 ### 3. Install Dependencies
@@ -59,7 +60,7 @@ pnpm install
 pnpm start
 ```
 
-The app will open at [http://localhost:3000](http://localhost:3000)
+The app will open at [http://127.0.0.1:3000](http://127.0.0.1:3000)
 
 ## How to Use
 
@@ -125,6 +126,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 - `pnpm start` - Run development server
 - `pnpm test` - Run tests
+- `pnpm test:e2e` - Run Playwright end-to-end tests (first run `pnpm exec playwright install chromium`)
 - `pnpm build` - Build for production
 - `pnpm eject` - Eject from Create React App (irreversible)
 
