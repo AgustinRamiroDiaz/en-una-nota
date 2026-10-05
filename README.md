@@ -126,6 +126,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 - `pnpm start` - Run development server
 - `pnpm test` - Run tests
+- `pnpm test:e2e` - Run Playwright end-to-end tests (first run `pnpm exec playwright install chromium`)
 - `pnpm build` - Build for production
 - `pnpm eject` - Eject from Create React App (irreversible)
 
