@@ -75,7 +75,6 @@ export function AuthProvider({ children }: AuthProviderProps): React.ReactElemen
 
       // Store code verifier for later use in callback (using localStorage for reliability)
       localStorage.setItem('pkce_code_verifier', codeVerifier);
-      console.log('Stored code verifier:', codeVerifier.substring(0, 20) + '...');
 
       // Redirect to Spotify authorization
       const authUrl = getAuthorizationUrl(codeChallenge);
@@ -98,14 +97,9 @@ export function AuthProvider({ children }: AuthProviderProps): React.ReactElemen
 
     setIsLoading(true);
 
-    // Small delay to ensure localStorage is ready (fixes race condition on first load)
-    await new Promise(resolve => setTimeout(resolve, 100));
-
     try {
       // Retrieve the code verifier from localStorage
       const codeVerifier = localStorage.getItem('pkce_code_verifier');
-      console.log('Retrieved code verifier:', codeVerifier ? codeVerifier.substring(0, 20) + '...' : 'NULL');
-      console.log('All localStorage keys:', Object.keys(localStorage));
 
       if (!codeVerifier) {
         throw new Error('Code verifier not found. Please try logging in again.');
