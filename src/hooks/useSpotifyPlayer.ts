@@ -5,6 +5,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { getRandomAnimalName } from '../utils/animalNames';
+import { SnippetController } from '../utils/snippetTimer';
 import type { SpotifyPlayer, SpotifyTrackInfo, PlaylistSearchResult } from '../types/spotify.d';
 
 interface UseSpotifyPlayerReturn {
@@ -28,6 +29,24 @@ interface UseSpotifyPlayerReturn {
   playPlaylist: (playlistUri: string, shuffle?: boolean) => Promise<void>;
 }
 
+const PLAYER_REQUEST_RETRIES = 2;
+const RETRY_FALLBACK_MS = 1000;
+const RETRY_MAX_MS = 5000;
+
+// The player endpoints answer 429 when rate limited and transient 5xx when the
+// device is briefly unreachable. Retry-After is only readable if Spotify exposes
+// it over CORS, hence the fallback delay.
+async function fetchWithRetry(url: string, init: RequestInit, retries = PLAYER_REQUEST_RETRIES): Promise<Response> {
+  const response = await fetch(url, init);
+  if (retries === 0 || (response.status !== 429 && response.status < 500)) {
+    return response;
+  }
+  const retryAfterSeconds = Number(response.headers.get('Retry-After'));
+  const delayMs = retryAfterSeconds > 0 ? Math.min(retryAfterSeconds * 1000, RETRY_MAX_MS) : RETRY_FALLBACK_MS;
+  await new Promise(resolve => setTimeout(resolve, delayMs));
+  return fetchWithRetry(url, init, retries - 1);
+}
+
 export function useSpotifyPlayer(accessToken: string | null, autoPauseDuration: number = 200): UseSpotifyPlayerReturn {
   const [player, setPlayer] = useState<SpotifyPlayer | null>(null);
   const [deviceId, setDeviceId] = useState<string | null>(null);
@@ -37,8 +56,7 @@ export function useSpotifyPlayer(accessToken: string | null, autoPauseDuration: 
   const [position, setPosition] = useState(0);
   const [duration, setDuration] = useState(0);
   const [playerName, setPlayerName] = useState('');
-  const autoPauseTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const shouldAutoPauseRef = useRef(false);
+  const [snippet] = useState(() => new SnippetController());
   const autoPauseDurationRef = useRef(autoPauseDuration);
 
   // Update the duration ref when it changes
@@ -71,7 +89,7 @@ export function useSpotifyPlayer(accessToken: string | null, autoPauseDuration: 
 
         // Transfer playback to this device
         try {
-          const response = await fetch('https://api.spotify.com/v1/me/player', {
+          const response = await fetchWithRetry('https://api.spotify.com/v1/me/player', {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
@@ -107,19 +125,8 @@ export function useSpotifyPlayer(accessToken: string | null, autoPauseDuration: 
         setPosition(state.position);
         setDuration(state.duration);
 
-        // Auto-pause logic: if track is playing and we should auto-pause
-        if (!state.paused && shouldAutoPauseRef.current && spotifyPlayer) {
-          // Clear any existing timeout
-          if (autoPauseTimeoutRef.current) {
-            clearTimeout(autoPauseTimeoutRef.current);
-          }
-
-          // Pause after configured duration
-          const playerRef = spotifyPlayer;
-          autoPauseTimeoutRef.current = setTimeout(() => {
-            playerRef.pause();
-            shouldAutoPauseRef.current = false;
-          }, autoPauseDurationRef.current);
+        if (spotifyPlayer) {
+          snippet.onState(spotifyPlayer, state);
         }
       });
 
@@ -170,14 +177,12 @@ export function useSpotifyPlayer(accessToken: string | null, autoPauseDuration: 
 
     // Cleanup
     return () => {
-      if (autoPauseTimeoutRef.current) {
-        clearTimeout(autoPauseTimeoutRef.current);
-      }
+      snippet.cancel();
       if (spotifyPlayer) {
         spotifyPlayer.disconnect();
       }
     };
-  }, [accessToken]);
+  }, [accessToken, snippet]);
 
   // Play a track on this device
   const playTrack = useCallback(async (trackUri: string): Promise<void> => {
@@ -187,7 +192,7 @@ export function useSpotifyPlayer(accessToken: string | null, autoPauseDuration: 
     }
 
     try {
-      await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
+      await fetchWithRetry(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -205,8 +210,9 @@ export function useSpotifyPlayer(accessToken: string | null, autoPauseDuration: 
   // Toggle play/pause
   const togglePlay = useCallback((): void => {
     if (!player) return;
+    snippet.cancel();
     player.togglePlay();
-  }, [player]);
+  }, [player, snippet]);
 
   // Next track
   const nextTrack = useCallback((): void => {
@@ -223,8 +229,9 @@ export function useSpotifyPlayer(accessToken: string | null, autoPauseDuration: 
   // Seek to position
   const seek = useCallback((positionMs: number): void => {
     if (!player) return;
+    snippet.cancel();
     player.seek(positionMs);
-  }, [player]);
+  }, [player, snippet]);
 
   // Set volume (0-1)
   const setVolume = useCallback((volume: number): void => {
@@ -235,18 +242,18 @@ export function useSpotifyPlayer(accessToken: string | null, autoPauseDuration: 
   // Play next track and auto-pause after configured duration
   const playNextAndPause = useCallback((): void => {
     if (!player) return;
-    shouldAutoPauseRef.current = true;
+    snippet.arm(player, autoPauseDurationRef.current, currentTrack?.id ?? null);
     player.nextTrack();
-  }, [player]);
+  }, [player, snippet, currentTrack]);
 
   // Replay current track from beginning and auto-pause after configured duration
   const replayAndPause = useCallback((): void => {
     if (!player) return;
-    shouldAutoPauseRef.current = true;
+    snippet.arm(player, autoPauseDurationRef.current, null);
     player.seek(0).then(() => {
       player.resume();
     });
-  }, [player]);
+  }, [player, snippet]);
 
   // Search for playlists
   const searchPlaylists = useCallback(async (query: string): Promise<PlaylistSearchResult[]> => {
@@ -300,7 +307,7 @@ export function useSpotifyPlayer(accessToken: string | null, autoPauseDuration: 
 
     try {
       // First, ensure this device is active
-      await fetch('https://api.spotify.com/v1/me/player', {
+      await fetchWithRetry('https://api.spotify.com/v1/me/player', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -314,7 +321,7 @@ export function useSpotifyPlayer(accessToken: string | null, autoPauseDuration: 
 
       // Enable shuffle if requested
       if (shuffle) {
-        await fetch(`https://api.spotify.com/v1/me/player/shuffle?state=true&device_id=${deviceId}`, {
+        await fetchWithRetry(`https://api.spotify.com/v1/me/player/shuffle?state=true&device_id=${deviceId}`, {
           method: 'PUT',
           headers: {
             'Authorization': `Bearer ${accessToken}`
@@ -323,8 +330,10 @@ export function useSpotifyPlayer(accessToken: string | null, autoPauseDuration: 
       }
 
       // Then play the playlist
-      shouldAutoPauseRef.current = true;
-      const response = await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
+      if (player) {
+        snippet.arm(player, autoPauseDurationRef.current, null);
+      }
+      const response = await fetchWithRetry(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -341,7 +350,7 @@ export function useSpotifyPlayer(accessToken: string | null, autoPauseDuration: 
     } catch (error) {
       console.error('Error playing playlist:', error);
     }
-  }, [deviceId, accessToken]);
+  }, [deviceId, accessToken, player, snippet]);
 
   return {
     player,

@@ -40,6 +40,11 @@ interface SpotifyPlayerState {
   paused: boolean;
   position: number;
   duration: number;
+  // Undocumented in Spotify's reference but sent by the SDK (see DefinitelyTyped).
+  // `timestamp` is the Unix ms of the last state change; `position` is as of then.
+  timestamp?: number;
+  loading?: boolean;
+  playback_id?: string;
   track_window: {
     current_track: SpotifyTrackInfo;
     previous_tracks: SpotifyTrackInfo[];
