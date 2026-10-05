@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>En Una Nota: Retro Futurism</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Exo+2:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; }
+body { min-height: 100vh; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none; padding: 0; }
+.bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+.app { position: relative; z-index: 1; min-height: 100vh; max-width: 460px; margin: 0 auto; padding: 20px 20px 24px; display: flex; flex-direction: column; gap: 22px; }
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.titles { min-width: 0; }
+.playlist { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+nav { display: flex; gap: 8px; flex: none; }
+.icon { width: 42px; height: 42px; display: grid; place-items: center; }
+.stage { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(150px, 1fr) auto; grid-template-areas: "round" "cover" "answers"; gap: 14px; }
+.round { grid-area: round; display: flex; align-items: baseline; gap: 10px; }
+.cover { grid-area: cover; position: relative; display: grid; place-items: center; overflow: hidden; text-align: center; }
+.cover-q, .cover-hint { position: relative; z-index: 1; }
+.cover-hint { position: absolute; left: 0; right: 0; bottom: 10px; }
+.answers { grid-area: answers; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; min-width: 0; }
+.answer { min-height: 76px; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; text-align: left; min-width: 0; padding: 8px 14px; }
+.answer .v { overflow-wrap: anywhere; }
+.shape { display: none; }
+.deck { display: flex; flex-direction: column; gap: 14px; }
+.snippet-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+input[type=range] { width: 100%; margin: 0; }
+.retry { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.retry button { height: 46px; }
+.transport { display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px; align-items: center; }
+.transport .reveal, .transport .next { height: 56px; }
+.play { width: 80px; height: 80px; display: grid; place-items: center; }
+.play .i-pause, .play.is-playing .i-play { display: none; }
+.play.is-playing .i-pause { display: block; }
+@media (min-width: 880px) {
+  .app { max-width: 1200px; padding: 36px 56px 44px; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); grid-template-rows: auto 1fr; column-gap: 64px; row-gap: 40px; }
+  .top { grid-column: 1 / -1; }
+  .stage { flex: none; grid-template-rows: auto 340px auto; align-self: center; }
+  .answer { min-height: 104px; }
+  .deck { align-self: center; margin: 0; gap: 20px; }
+  .retry button { height: 60px; font-size: 18px; }
+  .transport .reveal, .transport .next { height: 72px; font-size: 18px; }
+  .play { width: 104px; height: 104px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+<style>/* Retro futurism: 80s synthwave, striped sunset sun, perspective grid floor, neon outlines */
+:root {
+  --night: #140A33;
+  --dusk: #3B0F5C;
+  --cyan: #2DE2E6;
+  --pink: #FF3CAC;
+  --orange: #FF9E3D;
+  --text: #F3E9FF;
+}
+body { background: linear-gradient(180deg, var(--night) 0%, var(--dusk) 70%, #5C1460 100%); color: var(--text); font-family: 'Exo 2', sans-serif; font-weight: 500; }
+
+/* Grid floor */
+.bg::after {
+  content: ''; position: absolute; left: -50%; right: -50%; bottom: 0; height: 45%;
+  background:
+    linear-gradient(rgba(255,60,172,.55) 2px, transparent 2px) 0 0 / 100% 40px,
+    linear-gradient(90deg, rgba(255,60,172,.55) 2px, transparent 2px) 0 0 / 60px 100%;
+  transform: perspective(300px) rotateX(60deg); transform-origin: bottom;
+  -webkit-mask: linear-gradient(transparent, #000 60%); mask: linear-gradient(transparent, #000 60%);
+}
+
+.brand { font-family: 'Audiowide'; font-size: 20px; background: linear-gradient(180deg, #fff 0%, var(--cyan) 50%, #1B6F9E 51%, #fff 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.playlist { font-size: 14px; color: rgba(243,233,255,.7); }
+.icon { border-radius: 10px; border: 2px solid var(--cyan); color: var(--cyan); box-shadow: 0 0 12px rgba(45,226,230,.5); }
+.avatar { font-family: 'Audiowide'; }
+
+.round { justify-content: center; align-items: baseline; }
+.round-label { font-family: 'Audiowide'; font-size: 16px; color: var(--cyan); }
+.round-num { font-family: 'Audiowide'; font-size: 40px; color: #fff; text-shadow: 0 0 14px var(--pink); }
+
+/* Striped sunset sun stands in for the album cover */
+.cover { background: transparent; }
+.cover::before {
+  content: ''; position: absolute; height: 78%; top: 6%; aspect-ratio: 1; border-radius: 50%;
+  background: linear-gradient(180deg, #FFE45E 0%, var(--orange) 45%, var(--pink) 100%);
+  -webkit-mask: repeating-linear-gradient(180deg, #000 0 14px, transparent 14px 18px) 0 0 / 100% 100%,
+    linear-gradient(#000 0 55%, transparent 55%);
+  -webkit-mask-composite: source-over;
+  mask: linear-gradient(#000 0 55%, transparent 55%), repeating-linear-gradient(180deg, #000 0 12px, transparent 12px 20px);
+  mask-composite: add;
+  box-shadow: 0 0 60px rgba(255,60,172,.6);
+}
+.cover-q { font-family: 'Audiowide'; font-size: 70px; color: var(--night); margin-bottom: 24px; }
+.cover-hint { font-family: 'Audiowide'; font-size: 12px; color: var(--cyan); bottom: 4px; }
+.cover.is-shown .cover-hint { color: #fff; text-shadow: 0 0 8px var(--pink); }
+
+.answer { border-radius: 10px; border: 2px solid var(--pink); background: rgba(20,10,51,.7); box-shadow: 0 0 14px rgba(255,60,172,.45), inset 0 0 14px rgba(255,60,172,.2); }
+.answer .k { font-size: 12px; color: var(--pink); font-weight: 700; }
+.answer .v { font-family: 'Audiowide'; font-size: 17px; line-height: 1.2; }
+.answer.is-hidden .v { color: var(--cyan); font-family: 'Exo 2'; font-weight: 700; font-size: 15px; }
+
+.snippet { border-radius: 12px; border: 2px solid var(--cyan); background: rgba(20,10,51,.75); padding: 14px 16px 18px; box-shadow: 0 0 16px rgba(45,226,230,.4); }
+.snippet-head label { color: var(--cyan); font-weight: 600; }
+.snippet-head output { font-family: 'Audiowide'; font-size: 32px; color: #fff; text-shadow: 0 0 12px var(--cyan); }
+input[type=range] { -webkit-appearance: none; appearance: none; height: 8px; border-radius: 4px; background: linear-gradient(90deg, var(--pink), var(--orange) var(--fill), rgba(255,255,255,.15) var(--fill)); }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 24px; height: 24px; border-radius: 50%; background: #fff; box-shadow: 0 0 12px var(--pink); }
+input[type=range]::-moz-range-thumb { width: 24px; height: 24px; border: 0; border-radius: 50%; background: #fff; box-shadow: 0 0 12px var(--pink); }
+
+.retry button { border-radius: 10px; border: 2px solid rgba(45,226,230,.6); background: rgba(20,10,51,.75); color: var(--cyan); font-family: 'Audiowide'; font-size: 14px; }
+.transport button { border-radius: 12px; font-weight: 700; font-size: 16px; }
+.transport .reveal { border: 2px solid var(--cyan); background: rgba(20,10,51,.75); color: var(--cyan); }
+.transport .next { background: linear-gradient(90deg, var(--pink), var(--orange)); color: var(--night); }
+.play { border-radius: 50% !important; background: #fff; color: var(--pink); box-shadow: 0 0 24px var(--pink), 0 0 0 4px var(--pink); }
+
+button:focus-visible, input:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
+
+@media (min-width: 880px) {
+  .round { justify-content: flex-start; }
+  .round-num { font-size: 64px; }
+  .cover-q { font-size: 110px; }
+  .answer .v { font-size: 24px; }
+  .snippet-head output { font-size: 44px; }
+}
+</style>
+</head>
+<body class="retro-futurism">
+
+<div class="bg" aria-hidden="true"></div>
+<main class="app">
+  <header class="top">
+    <div class="titles">
+      <div class="brand">En Una Nota</div>
+      <div class="playlist">Rock Nacional Esencial <span>on Pingüino</span></div>
+    </div>
+    <nav>
+      <button class="icon search" aria-label="Search playlists"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button>
+      <button class="icon avatar" aria-label="Account">A</button>
+    </nav>
+  </header>
+
+  <section class="stage">
+    <div class="round"><span class="round-label">Song</span><span class="round-num">7</span></div>
+    <button class="cover is-hidden" data-answer="Canción Animal" aria-label="Reveal album cover">
+      <i class="shape s1"></i><i class="shape s2"></i><i class="shape s3"></i>
+      <span class="cover-q">?</span><span class="cover-hint">Album</span>
+    </button>
+    <div class="answers">
+      <button class="answer is-hidden" data-answer="De música ligera"><span class="k">Song</span><span class="v">Tap to reveal</span></button>
+      <button class="answer is-shown" data-answer="Soda Stereo"><span class="k">Artist</span><span class="v">Soda Stereo</span></button>
+    </div>
+  </section>
+
+  <section class="deck">
+    <div class="snippet">
+      <div class="snippet-head"><label for="len">Snippet length</label><output for="len">1.0s</output></div>
+      <input id="len" type="range" min="100" max="5000" step="100" value="1000">
+    </div>
+    <div class="retry">
+      <button data-grow="0" class="retry-same">Replay</button>
+      <button data-grow="20">+20%</button>
+      <button data-grow="50">+50%</button>
+      <button data-grow="100">+100%</button>
+    </div>
+    <div class="transport">
+      <button class="reveal">Reveal all</button>
+      <button class="play" aria-label="Play">
+        <svg class="i-play" width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg>
+        <svg class="i-pause" width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4.5h4.5v15H6zM13.5 4.5H18v15h-4.5z"/></svg>
+      </button>
+      <button class="next">Next song</button>
+    </div>
+  </section>
+</main>
+
+<script>
+const len = document.getElementById('len');
+const out = document.querySelector('.snippet output');
+const sync = () => {
+  const pct = (len.value - len.min) / (len.max - len.min) * 100;
+  len.style.setProperty('--fill', pct + '%');
+  out.textContent = (len.value / 1000).toFixed(1) + 's';
+};
+len.addEventListener('input', sync);
+sync();
+
+const reveal = (el) => {
+  if (!el.classList.contains('is-hidden')) return;
+  el.classList.replace('is-hidden', 'is-shown');
+  if (el.classList.contains('cover')) {
+    el.querySelector('.cover-q').textContent = '♪';
+    el.querySelector('.cover-hint').textContent = el.dataset.answer;
+  } else {
+    el.querySelector('.v').textContent = el.dataset.answer;
+  }
+};
+document.querySelectorAll('[data-answer]').forEach((el) => el.addEventListener('click', () => reveal(el)));
+
+const play = document.querySelector('.play');
+const setPlaying = (on) => { play.classList.toggle('is-playing', on); play.setAttribute('aria-label', on ? 'Pause' : 'Play'); };
+play.addEventListener('click', () => setPlaying(!play.classList.contains('is-playing')));
+document.querySelector('.reveal').addEventListener('click', () => {
+  document.querySelectorAll('[data-answer]').forEach(reveal);
+  setPlaying(true);
+});
+document.querySelectorAll('[data-grow]').forEach((b) => b.addEventListener('click', () => {
+  const grow = Number(b.dataset.grow);
+  len.value = Math.min(5000, Math.round(len.value * (1 + grow / 100) / 100) * 100);
+  sync();
+  setPlaying(true);
+}));
+</script>
+</body>
+</html>

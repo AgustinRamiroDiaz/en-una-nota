@@ -1,0 +1,53 @@
+/* Flat design: solid fills, no shadows or gradients, color carries hierarchy */
+:root {
+  --midnight: #2C3E50;
+  --turquoise: #1ABC9C;
+  --sunflower: #F1C40F;
+  --alizarin: #E74C3C;
+  --clouds: #ECF0F1;
+  --concrete: #95A5A6;
+}
+body { background: var(--clouds); color: var(--midnight); font-family: 'Figtree', sans-serif; font-weight: 500; }
+
+.brand { font-weight: 800; font-size: 20px; }
+.playlist { font-size: 14px; color: var(--concrete); }
+.icon { border-radius: 8px; background: #fff; }
+.avatar { background: var(--turquoise); color: #fff; font-weight: 800; }
+
+.round-label { font-size: 16px; color: var(--concrete); }
+.round-num { font-weight: 800; font-size: 34px; }
+
+.cover { border-radius: 12px; background: var(--midnight); color: var(--sunflower); }
+.cover-q { font-weight: 800; font-size: 90px; }
+.cover-hint { color: var(--clouds); font-size: 13px; }
+.cover.is-shown { background: var(--turquoise); color: #fff; }
+
+.answer { border-radius: 12px; background: #fff; }
+.answer .k { font-size: 13px; color: var(--concrete); }
+.answer .v { font-weight: 800; font-size: 20px; line-height: 1.15; }
+.answer.is-hidden { background: var(--sunflower); }
+.answer.is-hidden .k { color: var(--midnight); }
+.answer.is-hidden .v { font-weight: 700; font-size: 16px; }
+
+.snippet { border-radius: 12px; background: #fff; padding: 14px 16px 18px; }
+.snippet-head label { color: var(--concrete); }
+.snippet-head output { font-weight: 800; font-size: 30px; color: var(--alizarin); }
+input[type=range] { -webkit-appearance: none; appearance: none; height: 8px; border-radius: 4px; background: linear-gradient(90deg, var(--alizarin) var(--fill), var(--clouds) var(--fill)); }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 24px; height: 24px; border-radius: 50%; background: var(--alizarin); }
+input[type=range]::-moz-range-thumb { width: 24px; height: 24px; border: 0; border-radius: 50%; background: var(--alizarin); }
+
+.retry button { border-radius: 8px; background: #fff; font-weight: 700; font-size: 15px; }
+.retry .retry-same { background: var(--midnight); color: #fff; }
+.transport button { border-radius: 12px; font-weight: 700; font-size: 16px; }
+.transport .reveal { background: var(--sunflower); }
+.transport .next { background: var(--turquoise); color: #fff; }
+.play { border-radius: 50% !important; background: var(--alizarin); color: #fff; }
+
+button:focus-visible, input:focus-visible { outline: 3px solid var(--turquoise); outline-offset: 3px; }
+
+@media (min-width: 880px) {
+  .round-num { font-size: 48px; }
+  .cover-q { font-size: 150px; }
+  .answer .v { font-size: 28px; }
+  .snippet-head output { font-size: 42px; }
+}

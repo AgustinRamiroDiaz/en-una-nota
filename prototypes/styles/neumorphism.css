@@ -1,0 +1,60 @@
+/* Neumorphism: one soft surface, controls extruded or pressed into it, a single violet accent */
+:root {
+  --surface: #E4E9F0;
+  --hi: #FFFFFF;
+  --lo: #B8C1CF;
+  --text: #3E4A5E;
+  --muted: #8592A6;
+  --accent: #6C63FF;
+  --raised: 7px 7px 16px var(--lo), -7px -7px 16px var(--hi);
+  --raised-sm: 4px 4px 10px var(--lo), -4px -4px 10px var(--hi);
+  --pressed: inset 5px 5px 10px var(--lo), inset -5px -5px 10px var(--hi);
+}
+body { background: var(--surface); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 500; }
+
+.brand { font-weight: 800; font-size: 20px; }
+.playlist { font-size: 14px; color: var(--muted); }
+.icon { border-radius: 14px; box-shadow: var(--raised-sm); }
+.avatar { color: var(--accent); font-weight: 800; }
+
+.round { align-items: baseline; }
+.round-label { font-size: 16px; color: var(--muted); }
+.round-num { font-weight: 800; font-size: 34px; }
+
+.cover { border-radius: 28px; box-shadow: var(--raised); }
+.cover::before { content: ''; position: absolute; height: 64%; aspect-ratio: 1; border-radius: 50%; box-shadow: var(--pressed); }
+.cover-q { font-weight: 800; font-size: 64px; color: var(--accent); }
+.cover-hint { font-size: 13px; color: var(--muted); }
+.cover.is-shown::before { box-shadow: var(--raised-sm); }
+.cover.is-shown .cover-hint { color: var(--text); font-weight: 700; }
+
+.answer { border-radius: 20px; box-shadow: var(--raised); padding: 10px 16px; }
+.answer.is-shown { box-shadow: var(--pressed); }
+.answer .k { font-size: 13px; color: var(--muted); }
+.answer .v { font-weight: 800; font-size: 19px; line-height: 1.2; }
+.answer.is-hidden .v { color: var(--accent); font-size: 15px; }
+
+.snippet { border-radius: 24px; box-shadow: var(--raised); padding: 16px 18px 20px; }
+.snippet-head label { color: var(--muted); font-size: 14px; }
+.snippet-head output { font-weight: 800; font-size: 30px; color: var(--accent); }
+input[type=range] { -webkit-appearance: none; appearance: none; height: 14px; border-radius: 7px; box-shadow: var(--pressed);
+  background: linear-gradient(90deg, rgba(108,99,255,.55) var(--fill), transparent var(--fill)); }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 30px; height: 30px; border-radius: 50%; background: var(--surface); box-shadow: 3px 3px 8px var(--lo), -3px -3px 8px var(--hi); }
+input[type=range]::-moz-range-thumb { width: 30px; height: 30px; border: 0; border-radius: 50%; background: var(--surface); box-shadow: 3px 3px 8px var(--lo), -3px -3px 8px var(--hi); }
+
+.retry button { border-radius: 16px; box-shadow: var(--raised-sm); font-weight: 700; font-size: 15px; }
+.retry .retry-same { color: var(--accent); }
+.retry button:active, .transport button:active, .icon:active { box-shadow: var(--pressed); }
+
+.transport button { border-radius: 20px; box-shadow: var(--raised); font-weight: 700; font-size: 16px; }
+.play { border-radius: 50% !important; color: var(--accent); }
+.play.is-playing { box-shadow: var(--pressed); }
+
+button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+
+@media (min-width: 880px) {
+  .round-num { font-size: 48px; }
+  .cover-q { font-size: 110px; }
+  .answer .v { font-size: 26px; }
+  .snippet-head output { font-size: 40px; }
+}

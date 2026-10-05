@@ -1,0 +1,73 @@
+/* Retro futurism: 80s synthwave, striped sunset sun, perspective grid floor, neon outlines */
+:root {
+  --night: #140A33;
+  --dusk: #3B0F5C;
+  --cyan: #2DE2E6;
+  --pink: #FF3CAC;
+  --orange: #FF9E3D;
+  --text: #F3E9FF;
+}
+body { background: linear-gradient(180deg, var(--night) 0%, var(--dusk) 70%, #5C1460 100%); color: var(--text); font-family: 'Exo 2', sans-serif; font-weight: 500; }
+
+/* Grid floor */
+.bg::after {
+  content: ''; position: absolute; left: -50%; right: -50%; bottom: 0; height: 45%;
+  background:
+    linear-gradient(rgba(255,60,172,.55) 2px, transparent 2px) 0 0 / 100% 40px,
+    linear-gradient(90deg, rgba(255,60,172,.55) 2px, transparent 2px) 0 0 / 60px 100%;
+  transform: perspective(300px) rotateX(60deg); transform-origin: bottom;
+  -webkit-mask: linear-gradient(transparent, #000 60%); mask: linear-gradient(transparent, #000 60%);
+}
+
+.brand { font-family: 'Audiowide'; font-size: 20px; background: linear-gradient(180deg, #fff 0%, var(--cyan) 50%, #1B6F9E 51%, #fff 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.playlist { font-size: 14px; color: rgba(243,233,255,.7); }
+.icon { border-radius: 10px; border: 2px solid var(--cyan); color: var(--cyan); box-shadow: 0 0 12px rgba(45,226,230,.5); }
+.avatar { font-family: 'Audiowide'; }
+
+.round { justify-content: center; align-items: baseline; }
+.round-label { font-family: 'Audiowide'; font-size: 16px; color: var(--cyan); }
+.round-num { font-family: 'Audiowide'; font-size: 40px; color: #fff; text-shadow: 0 0 14px var(--pink); }
+
+/* Striped sunset sun stands in for the album cover */
+.cover { background: transparent; }
+.cover::before {
+  content: ''; position: absolute; height: 78%; top: 6%; aspect-ratio: 1; border-radius: 50%;
+  background: linear-gradient(180deg, #FFE45E 0%, var(--orange) 45%, var(--pink) 100%);
+  -webkit-mask: repeating-linear-gradient(180deg, #000 0 14px, transparent 14px 18px) 0 0 / 100% 100%,
+    linear-gradient(#000 0 55%, transparent 55%);
+  -webkit-mask-composite: source-over;
+  mask: linear-gradient(#000 0 55%, transparent 55%), repeating-linear-gradient(180deg, #000 0 12px, transparent 12px 20px);
+  mask-composite: add;
+  box-shadow: 0 0 60px rgba(255,60,172,.6);
+}
+.cover-q { font-family: 'Audiowide'; font-size: 70px; color: var(--night); margin-bottom: 24px; }
+.cover-hint { font-family: 'Audiowide'; font-size: 12px; color: var(--cyan); bottom: 4px; }
+.cover.is-shown .cover-hint { color: #fff; text-shadow: 0 0 8px var(--pink); }
+
+.answer { border-radius: 10px; border: 2px solid var(--pink); background: rgba(20,10,51,.7); box-shadow: 0 0 14px rgba(255,60,172,.45), inset 0 0 14px rgba(255,60,172,.2); }
+.answer .k { font-size: 12px; color: var(--pink); font-weight: 700; }
+.answer .v { font-family: 'Audiowide'; font-size: 17px; line-height: 1.2; }
+.answer.is-hidden .v { color: var(--cyan); font-family: 'Exo 2'; font-weight: 700; font-size: 15px; }
+
+.snippet { border-radius: 12px; border: 2px solid var(--cyan); background: rgba(20,10,51,.75); padding: 14px 16px 18px; box-shadow: 0 0 16px rgba(45,226,230,.4); }
+.snippet-head label { color: var(--cyan); font-weight: 600; }
+.snippet-head output { font-family: 'Audiowide'; font-size: 32px; color: #fff; text-shadow: 0 0 12px var(--cyan); }
+input[type=range] { -webkit-appearance: none; appearance: none; height: 8px; border-radius: 4px; background: linear-gradient(90deg, var(--pink), var(--orange) var(--fill), rgba(255,255,255,.15) var(--fill)); }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 24px; height: 24px; border-radius: 50%; background: #fff; box-shadow: 0 0 12px var(--pink); }
+input[type=range]::-moz-range-thumb { width: 24px; height: 24px; border: 0; border-radius: 50%; background: #fff; box-shadow: 0 0 12px var(--pink); }
+
+.retry button { border-radius: 10px; border: 2px solid rgba(45,226,230,.6); background: rgba(20,10,51,.75); color: var(--cyan); font-family: 'Audiowide'; font-size: 14px; }
+.transport button { border-radius: 12px; font-weight: 700; font-size: 16px; }
+.transport .reveal { border: 2px solid var(--cyan); background: rgba(20,10,51,.75); color: var(--cyan); }
+.transport .next { background: linear-gradient(90deg, var(--pink), var(--orange)); color: var(--night); }
+.play { border-radius: 50% !important; background: #fff; color: var(--pink); box-shadow: 0 0 24px var(--pink), 0 0 0 4px var(--pink); }
+
+button:focus-visible, input:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
+
+@media (min-width: 880px) {
+  .round { justify-content: flex-start; }
+  .round-num { font-size: 64px; }
+  .cover-q { font-size: 110px; }
+  .answer .v { font-size: 24px; }
+  .snippet-head output { font-size: 44px; }
+}
