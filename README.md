@@ -17,7 +17,7 @@ Play now at https://agustinramirodiaz.github.io/en-una-nota/!
 ## Requirements
 
 - **Spotify Premium Account** (required for full playback)
-- Node.js and npm installed
+- Node.js and [pnpm](https://pnpm.io/installation) installed
 - Spotify Developer App credentials
 
 ## Setup
@@ -50,13 +50,13 @@ Play now at https://agustinramirodiaz.github.io/en-una-nota/!
 ### 3. Install Dependencies
 
 ```bash
-npm install
+pnpm install
 ```
 
 ### 4. Run the App
 
 ```bash
-npm start
+pnpm start
 ```
 
 The app will open at [http://localhost:3000](http://localhost:3000)
@@ -123,10 +123,10 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ### Available Scripts
 
-- `npm start` - Run development server
-- `npm test` - Run tests
-- `npm run build` - Build for production
-- `npm run eject` - Eject from Create React App (irreversible)
+- `pnpm start` - Run development server
+- `pnpm test` - Run tests
+- `pnpm build` - Build for production
+- `pnpm eject` - Eject from Create React App (irreversible)
 
 ## License
 

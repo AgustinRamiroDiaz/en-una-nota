@@ -1,0 +1,14 @@
+# CRA 5 resolves babel and eslint plugins from the top of node_modules,
+# so it needs the flat npm-style layout.
+nodeLinker: hoisted
+
+# Wait a day before installing freshly published versions.
+minimumReleaseAge: 1440
+
+overrides:
+  typescript: ^5.6.3
+
+# core-js postinstall only prints a funding banner.
+allowBuilds:
+  core-js: false
+  core-js-pure: false

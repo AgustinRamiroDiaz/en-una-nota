@@ -3,6 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "homepage": "https://agustinramirodiaz.github.io/en-una-nota",
+  "packageManager": "pnpm@12.9.1",
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "12.9.1",
+      "onFail": "error"
+    }
+  },
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.0",
@@ -41,8 +49,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "overrides": {
-    "typescript": "^5.6.3"
   }
 }
