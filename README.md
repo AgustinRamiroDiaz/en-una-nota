@@ -12,7 +12,7 @@ Play now at https://agustinramirodiaz.github.io/en-una-nota/!
 - ▶️ Play/pause controls for each round
 - 🔐 Secure OAuth 2.0 authentication with PKCE
 - 📱 Responsive design for mobile and desktop
-- 🎨 Spotify-themed UI
+- 🎨 Neobrutalist "Neo Pop" UI
 
 ## Requirements
 

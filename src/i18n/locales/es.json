@@ -16,7 +16,15 @@
   "logout": "Cerrar sesión",
   "login": "Iniciar sesión con Spotify",
   "welcome": "Adivina la canción",
-  "trackHidden": "Canción ???",
-  "artistHidden": "Artista ???"
+  "replay": "Repetir",
+  "album": "Álbum",
+  "tapToReveal": "Toca para revelar",
+  "playingOn": "en",
+  "emptyTitle": "Elige una playlist para empezar",
+  "emptyBody": "Busca cualquier playlist de Spotify. Cada ronda suena un fragmento corto de una canción al azar.",
+  "defaultSettings": "Duración por defecto del fragmento",
+  "play": "Reproducir",
+  "pause": "Pausar",
+  "close": "Cerrar",
+  "premiumNote": "Necesitas una cuenta de Spotify Premium para reproducir."
 }
-
