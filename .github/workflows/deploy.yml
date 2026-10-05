@@ -23,17 +23,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup pnpm and Node.js, install dependencies
+        uses: pnpm/setup@v3
         with:
-          node-version: '18'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
+          runtime: node@24
+          cache: true
+          require-lockfile: true
 
       - name: Build project
-        run: npm run build
+        run: pnpm run build
         env:
           CI: false
           REACT_APP_SPOTIFY_CLIENT_ID: b1a8e7c79c80480eb3e65c8ae0d86b02
