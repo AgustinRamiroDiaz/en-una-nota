@@ -16,7 +16,15 @@
   "logout": "Logout",
   "login": "Login with Spotify",
   "welcome": "Guess the song",
-  "trackHidden": "Song ???",
-  "artistHidden": "Artist ???"
+  "replay": "Replay",
+  "album": "Album",
+  "tapToReveal": "Tap to reveal",
+  "playingOn": "on",
+  "emptyTitle": "Pick a playlist to start",
+  "emptyBody": "Search for any Spotify playlist. Each round plays a short snippet of a random song from it.",
+  "defaultSettings": "Default snippet length",
+  "play": "Play",
+  "pause": "Pause",
+  "close": "Close",
+  "premiumNote": "Needs a Spotify Premium account for playback."
 }
-

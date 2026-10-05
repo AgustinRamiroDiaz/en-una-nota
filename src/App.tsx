@@ -23,8 +23,11 @@ function App(): React.ReactElement {
   if (isLoading) {
     return (
       <div className="App">
-        <div className="loading-container">
-          <div className="loading">Authenticating...</div>
+        <div className="loading">
+          <div className="status-card nb-card">
+            <span className="status-dot" />
+            Authenticating...
+          </div>
         </div>
       </div>
     );

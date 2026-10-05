@@ -8,5 +8,5 @@
 ## Upcoming Features
 
 - [x] **Hint system** - Show the artist name as a hint (button to reveal artist without revealing full song)
-- [ ] **Show playlist name** - Display the currently loaded playlist name in the UI
+- [x] **Show playlist name** - Display the currently loaded playlist name in the UI
 - [ ] **Session history** - Show list of songs already played this session (collapsible/hideable)
